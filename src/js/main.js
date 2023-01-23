@@ -1,54 +1,99 @@
+import ImprovedNoise from "improved-noise";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-// @ts-ignore
-import fragmentShader from "../shaders/terrain/terrain_fragment.glsl";
-// @ts-ignore
-import vertexShader from "../shaders/terrain/terrain_vertex.glsl";
+import FPSCounter from "./fps_counter";
 
-// Canvas
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+const noiseSpeed = 0.2;
+const planeRes = 100;
 
-// Scene
-const scene = new THREE.Scene();
+let fpsCounter = new FPSCounter();
+let camera;
+let clock;
+let perlin;
+let scene;
+let renderer;
+let controls;
+let plane;
+let planePosition;
+let planeUV;
+let planeVUv;
 
-// Camera
-const cameraFOV = 70;
-const cameraAspect = window.innerWidth / window.innerHeight;
-const cameraNear = 0.01;
-const cameraFar = 10000;
-const camera = new THREE.PerspectiveCamera(
-  cameraFOV,
-  cameraAspect,
-  cameraNear,
-  cameraFar
-);
-camera.position.set(0, 20, 100);
+function setup() {
+  setUpCamera();
+  setUpClock();
+  setupNoise();
+  setupScene();
+  setupRenderer();
+  setupFPSCounter();
+  setupControls();
+  setupPlane();
+  animate();
+}
 
-// Orbit Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
+function setUpCamera() {
+  camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
+  camera.position.set(0, 2.5, 10);
+}
 
-// Plane
-const geometry = new THREE.PlaneGeometry(100, 100, 100, 100);
-geometry.rotateX(-Math.PI / 2);
-const heightMap = new THREE.TextureLoader().load("../img/height_map.jpg");
-const material = new THREE.ShaderMaterial({
-  uniforms: { bumpTexture: { value: heightMap }, bumpScale: { value: 10 } },
-  vertexShader: vertexShader,
-  fragmentShader: fragmentShader,
-  side: THREE.DoubleSide,
-});
-const plane = new THREE.Mesh(geometry, material);
-scene.add(plane);
+function setUpClock() {
+  clock = new THREE.Clock();
+}
 
-renderer.setAnimationLoop(animate);
+function setupNoise() {
+  perlin = ImprovedNoise();
+}
+
+function setupScene() {
+  scene = new THREE.Scene();
+}
+
+function setupRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(innerWidth, innerHeight);
+  document.body.appendChild(renderer.domElement);
+}
+
+function setupFPSCounter() {
+  fpsCounter.begin();
+}
+
+function setupControls() {
+  controls = new OrbitControls(camera, renderer.domElement);
+}
+
+function setupPlane() {
+  let planeGeo = new THREE.PlaneGeometry(10, 10, planeRes, planeRes);
+  planeGeo.rotateX(Math.PI * -0.5);
+  let planeMat = new THREE.MeshBasicMaterial({
+    wireframe: true,
+    color: 0x00ff69,
+  });
+  plane = new THREE.Mesh(planeGeo, planeMat);
+  scene.add(plane);
+  planePosition = planeGeo.attributes.position;
+  planeUV = planeGeo.attributes.uv;
+  planeVUv = new THREE.Vector2();
+}
 
 function animate() {
-  requestAnimationFrame(animate);
+  renderer.setAnimationLoop((_) => {
+    fpsCounter.begin();
 
-  controls.update();
-
-  renderer.render(scene, camera);
+    let t = clock.getElapsedTime();
+    for (let i = 0; i < planePosition.count; i++) {
+      planeVUv.fromBufferAttribute(planeUV, i).multiplyScalar(2.5);
+      let y = perlin.noise(
+        planeVUv.x,
+        planeVUv.y + t * noiseSpeed,
+        t * noiseSpeed
+      );
+      planePosition.setY(i, y);
+    }
+    planePosition.needsUpdate = true;
+    renderer.render(scene, camera);
+    fpsCounter.end();
+  });
 }
+
+setup();
+animate();
