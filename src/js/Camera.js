@@ -27,7 +27,7 @@ export default class Camera {
     );
     this.instance.up.set(0, 0, 1);
     this.instance.lookAt(new THREE.Vector3());
-    this.instance.position.set(10, 0, 0);
+    this.instance.position.set(0, 2.5, 10);
     this.container.add(this.instance);
 
     // Resize event
@@ -39,6 +39,11 @@ export default class Camera {
       this.instance?.updateProjectionMatrix();
     });
 
+    // Time tick
+    this.time.on("tick", () => {
+      if (!this.instance) return;
+      this.instance.position.set(0, 2.5, 10);
+    });
   }
 
   setOrbitControls() {

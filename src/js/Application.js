@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import Camera from "./Camera";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import FPSCounter from "./utils/FPSCounter";
 import Sizes from "./utils/Sizes";
 import Time from "./utils/Time";
-import World from "./world/index";
+import Floor from "./world/floor";
 
 export default class Application {
   constructor(_options) {
@@ -15,12 +15,11 @@ export default class Application {
     // TODO: this.resources = new Resources();
 
     this.setConfig();
-    this.setRenderer();
     this.setCamera();
-    this.setWorld();
+    this.setRenderer();
     this.setFPSCounter();
+    this.setWorld();
     this.setHelpers();
-    this.animate();
   }
 
   setConfig() {
@@ -35,9 +34,9 @@ export default class Application {
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.$canvas,
-      alpha: false,
+      alpha: true,
     });
-    this.renderer.setClearColor(0xff0000, 1);
+    //this.renderer.setClearColor(0xff0000, 1);
     this.renderer.setPixelRatio(2);
     this.renderer.setSize(
       this.sizes.viewport.width,
@@ -54,38 +53,59 @@ export default class Application {
       );
     });
 
+    // Render loop
     this.time.on("tick", () => {
       if (!this.camera) return;
       if (!this.renderer) return;
       if (!this.scene) return;
-      if (!this.camera.instance) return;
+      if (!this.camera) return;
       this.fpsCounter?.begin();
-      this.renderer.render(this.scene, this.camera.instance);
+      this.renderer.render(this.scene, this.camera);
       this.fpsCounter?.end();
     });
+
+    // Orbit controls
+    if (!this.camera) return;
+    this.orbitControls = new OrbitControls(
+      this.camera,
+      this.renderer?.domElement
+    );
   }
 
   setCamera() {
-    this.camera = new Camera({
+    this.camera = new THREE.PerspectiveCamera(
+      100,
+      innerWidth / innerHeight,
+      1,
+      100
+    );
+    this.camera.position.set(0, 2.5, 10);
+    this.scene?.add(this.camera);
+
+    /* this.camera = new Camera({
       time: this.time,
       sizes: this.sizes,
       renderer: this.renderer,
       config: this.config,
     });
 
-    this.scene?.add(this.camera.container);
+    this.scene?.add(this.camera.container); */
   }
 
   setHelpers() {
     let axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
+    this.scene?.add(axesHelper);
 
     let gridHelper = new THREE.GridHelper(10, 10);
-    this.scene.add(gridHelper);
+    this.scene?.add(gridHelper);
   }
 
   setWorld() {
-    this.world = new World({
+    let floor = new Floor();
+    floor.geometry.rotateX(Math.PI * -0.5);
+    this.scene?.add(floor.container);
+
+    /* this.world = new World({
       config: this.config,
       resources: this.resources,
       time: this.time,
@@ -93,18 +113,10 @@ export default class Application {
       camera: this.camera,
       renderer: this.renderer,
     });
-    this.scene?.add(this.world.container);
+    this.scene?.add(this.world.container); */
   }
 
   setFPSCounter() {
     this.fpsCounter = new FPSCounter();
-  }
-
-  animate() {
-    this.renderer?.setAnimationLoop((_) => {
-      if (!this.scene) return;
-      if (!this.camera?.instance) return;
-      this.renderer?.render(this.scene, this.camera?.instance);
-    });
   }
 }
