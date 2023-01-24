@@ -1,12 +1,12 @@
 import ImprovedNoise from "improved-noise";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import FPSCounter from "./fps_counter";
+import Lights from "./lights";
+import Floor from "./world/floor";
 
 const noiseSpeed = 0.2;
-const planeRes = 100;
 
-let fpsCounter = new FPSCounter();
+//let fpsCounter = new FPSCounter();
 let camera;
 let clock;
 let perlin;
@@ -26,12 +26,13 @@ function setup() {
   setupRenderer();
   setupFPSCounter();
   setupControls();
-  setupPlane();
-  animate();
+  setupLights();
+  setupWorld();
+  setupDebug();
 }
 
 function setUpCamera() {
-  camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 1, 100);
+  camera = new THREE.PerspectiveCamera(100, innerWidth / innerHeight, 1, 100);
   camera.position.set(0, 2.5, 10);
 }
 
@@ -54,30 +55,31 @@ function setupRenderer() {
 }
 
 function setupFPSCounter() {
-  fpsCounter.begin();
+  //fpsCounter.begin();
 }
 
 function setupControls() {
   controls = new OrbitControls(camera, renderer.domElement);
 }
 
-function setupPlane() {
-  let planeGeo = new THREE.PlaneGeometry(10, 10, planeRes, planeRes);
-  planeGeo.rotateX(Math.PI * -0.5);
-  let planeMat = new THREE.MeshBasicMaterial({
-    wireframe: true,
-    color: 0x00ff69,
-  });
-  plane = new THREE.Mesh(planeGeo, planeMat);
-  scene.add(plane);
-  planePosition = planeGeo.attributes.position;
-  planeUV = planeGeo.attributes.uv;
+function setupLights() {
+  //scene.add(Lights.ambientLight());
+}
+
+function setupWorld() {
+
+  let floor = new Floor();
+  floor.geometry.rotateX(Math.PI * -0.5);
+  scene.add(floor.container);
+
+  planePosition = floor.geometry.attributes.position;
+  planeUV = floor.geometry.attributes.uv;
   planeVUv = new THREE.Vector2();
 }
 
 function animate() {
   renderer.setAnimationLoop((_) => {
-    fpsCounter.begin();
+    //fpsCounter.begin();
 
     let t = clock.getElapsedTime();
     for (let i = 0; i < planePosition.count; i++) {
@@ -89,10 +91,19 @@ function animate() {
       );
       planePosition.setY(i, y);
     }
+
     planePosition.needsUpdate = true;
     renderer.render(scene, camera);
-    fpsCounter.end();
+    //fpsCounter.end();
   });
+}
+
+function setupDebug() {
+  let axesHelper = new THREE.AxesHelper(5);
+  scene.add(axesHelper);
+
+  let gridHelper = new THREE.GridHelper(10, 10);
+  //scene.add(gridHelper);
 }
 
 setup();
