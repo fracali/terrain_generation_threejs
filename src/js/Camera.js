@@ -14,7 +14,7 @@ export default class Camera {
     this.container.matrixAutoUpdate = false;
 
     this.setInstance();
-    this.setOrbitControls();
+    //this.setOrbitControls();
   }
 
   setInstance() {
@@ -42,7 +42,7 @@ export default class Camera {
     // Time tick
     this.time.on("tick", () => {
       if (!this.instance) return;
-      this.instance.position.set(0, 2.5, 10);
+      //this.instance.position.set(0, 2.5, 10);
     });
   }
 
@@ -52,7 +52,8 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
-    this.orbitControls.enabled = true;
-    this.orbitControls.zoomSpeed = 0.5;
+    console.log("OrbitControls", this.orbitControls);
+    //this.orbitControls.enabled = true;
+    //this.orbitControls.zoomSpeed = 0.5;
   }
 }

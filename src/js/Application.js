@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import Camera from "./Camera";
 import FPSCounter from "./utils/FPSCounter";
 import Sizes from "./utils/Sizes";
 import Time from "./utils/Time";
@@ -55,41 +56,45 @@ export default class Application {
 
     // Render loop
     this.time.on("tick", () => {
+      this.fpsCounter?.begin();
       if (!this.camera) return;
       if (!this.renderer) return;
       if (!this.scene) return;
       if (!this.camera) return;
-      this.fpsCounter?.begin();
-      this.renderer.render(this.scene, this.camera);
+      if (!this.camera.instance) return;
+      this.renderer.render(this.scene, this.camera.instance);
+
       this.fpsCounter?.end();
     });
 
     // Orbit controls
-    if (!this.camera) return;
+    if (!this.camera?.instance) return;
     this.orbitControls = new OrbitControls(
-      this.camera,
+      this.camera.instance,
       this.renderer?.domElement
     );
   }
 
   setCamera() {
-    this.camera = new THREE.PerspectiveCamera(
+    /* this.camera = new THREE.PerspectiveCamera(
       100,
       innerWidth / innerHeight,
       1,
       100
     );
     this.camera.position.set(0, 2.5, 10);
-    this.scene?.add(this.camera);
+    this.scene?.add(this.camera); */
 
-    /* this.camera = new Camera({
+    this.camera = new Camera({
       time: this.time,
       sizes: this.sizes,
       renderer: this.renderer,
       config: this.config,
+      orbitControls: this.orbitControls,
     });
 
-    this.scene?.add(this.camera.container); */
+    this.scene?.add(this.camera.container);
+    console.log(this.camera);
   }
 
   setHelpers() {
