@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import Lights from "../lights";
 import Floor from "./floor";
 
 export default class {
@@ -18,8 +17,8 @@ export default class {
     this.container.matrixAutoUpdate = false;
 
     this.setAxes();
-    this.setFloor();
     this.setLights();
+    this.setFloor();
   }
 
   setAxes() {
@@ -28,13 +27,25 @@ export default class {
   }
 
   setLights() {
-    this.lights = new Lights();
-    this.container.add(this.lights.container);
+    let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
+    this.container.add(hemisphereLight);
+
+    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(8, 10, 8);
+    this.container.add(directionalLight);
+
+    // Directional light helper
+    let directionalLightHelper = new THREE.DirectionalLightHelper(
+      directionalLight,
+      1,
+      0xff0000
+    );
+    this.container.add(directionalLightHelper);
   }
 
   setFloor() {
     this.floor = new Floor();
-
+    this.floor.geometry.rotateX(Math.PI * -0.5);
     this.container.add(this.floor.container);
   }
 }

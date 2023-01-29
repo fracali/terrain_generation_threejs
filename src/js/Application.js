@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Camera from "./Camera";
 import FPSCounter from "./utils/FPSCounter";
 import Sizes from "./utils/Sizes";
 import Time from "./utils/Time";
-import Floor from "./world/floor";
+import World from "./world/index";
 
 export default class Application {
   constructor(_options) {
@@ -16,11 +15,11 @@ export default class Application {
     // TODO: this.resources = new Resources();
 
     this.setConfig();
-    this.setCamera();
     this.setRenderer();
+    this.setCamera();
     this.setFPSCounter();
     this.setWorld();
-    this.setHelpers();
+    //this.setHelpers();
   }
 
   setConfig() {
@@ -66,35 +65,17 @@ export default class Application {
 
       this.fpsCounter?.end();
     });
-
-    // Orbit controls
-    if (!this.camera?.instance) return;
-    this.orbitControls = new OrbitControls(
-      this.camera.instance,
-      this.renderer?.domElement
-    );
   }
 
   setCamera() {
-    /* this.camera = new THREE.PerspectiveCamera(
-      100,
-      innerWidth / innerHeight,
-      1,
-      100
-    );
-    this.camera.position.set(0, 2.5, 10);
-    this.scene?.add(this.camera); */
-
     this.camera = new Camera({
       time: this.time,
       sizes: this.sizes,
       renderer: this.renderer,
       config: this.config,
-      orbitControls: this.orbitControls,
     });
 
-    this.scene?.add(this.camera.container);
-    console.log(this.camera);
+    console.log(this.camera.instance);
   }
 
   setHelpers() {
@@ -106,11 +87,11 @@ export default class Application {
   }
 
   setWorld() {
-    let floor = new Floor();
+    /* let floor = new Floor();
     floor.geometry.rotateX(Math.PI * -0.5);
-    this.scene?.add(floor.container);
+    this.scene?.add(floor.container); */
 
-    /* this.world = new World({
+    this.world = new World({
       config: this.config,
       resources: this.resources,
       time: this.time,
@@ -118,7 +99,7 @@ export default class Application {
       camera: this.camera,
       renderer: this.renderer,
     });
-    this.scene?.add(this.world.container); */
+    this.scene?.add(this.world.container);
   }
 
   setFPSCounter() {

@@ -7,7 +7,7 @@ export default class Floor {
     this.container = new THREE.Object3D();
 
     // Geometry
-    this.geometry = new THREE.PlaneGeometry(10, 10, 100, 100);
+    this.geometry = new THREE.PlaneGeometry(100, 100, 1000, 1000);
 
     // Material
     this.material = FloorMaterial();
