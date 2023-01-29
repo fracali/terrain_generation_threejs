@@ -19,6 +19,17 @@ export default class {
     this.setAxes();
     this.setLights();
     this.setFloor();
+    this.addDebugCube();
+  }
+
+  addDebugCube() {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    geometry.translate(0, 2, 0);
+    const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    this.container.add(cube);
   }
 
   setAxes() {
@@ -27,20 +38,38 @@ export default class {
   }
 
   setLights() {
-    let hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
-    this.container.add(hemisphereLight);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+    hemiLight.color.setHSL(0.6, 1, 0.6);
+    hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+    hemiLight.position.set(0, 50, 0);
+    this.container.add(hemiLight);
 
-    let directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(8, 10, 8);
-    this.container.add(directionalLight);
+    const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+    this.container.add(hemiLightHelper);
 
-    // Directional light helper
-    let directionalLightHelper = new THREE.DirectionalLightHelper(
-      directionalLight,
-      1,
-      0xff0000
-    );
-    this.container.add(directionalLightHelper);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.color.setHSL(0.1, 1, 0.95);
+    dirLight.position.set(-1, 1.75, 1);
+    dirLight.position.multiplyScalar(30);
+    this.container.add(dirLight);
+
+    dirLight.castShadow = true;
+
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+
+    const d = 50;
+
+    dirLight.shadow.camera.left = -d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = -d;
+
+    dirLight.shadow.camera.far = 3500;
+    dirLight.shadow.bias = -0.0001;
+
+    const dirLightHelper = new THREE.DirectionalLightHelper(dirLight, 10);
+    this.container.add(dirLightHelper);
   }
 
   setFloor() {
