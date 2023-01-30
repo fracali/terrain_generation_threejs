@@ -11,7 +11,7 @@ export default class Tree {
 
   loadMaterial() {
     const loader = new THREE.TextureLoader();
-    loader.load("../../assets/textures/pine_tree.png", (texture) => {
+    loader.load("../../../public/assets/textures/pine_tree.png", (texture) => {
       this.material = new THREE.MeshStandardMaterial({
         map: texture,
         transparent: true,
@@ -22,7 +22,7 @@ export default class Tree {
 
   loadModel() {
     const loader = new FBXLoader();
-    loader.load("../../assets/resources/pine_tree.fbx", (object) => {
+    loader.load("../../../public/assets/resources/pine_tree.fbx", (object) => {
       object.scale.setScalar(0.05);
       object.traverse((child) => {
         // @ts-ignore
