@@ -19,11 +19,11 @@ export default class {
     this.setAxes();
     this.setLights();
     this.setFloor();
-    this.addDebugCube();
+    this.addDebugSphere();
   }
 
-  addDebugCube() {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+  addDebugSphere() {
+    const geometry = new THREE.SphereGeometry(1, 50, 50);
     geometry.translate(0, 2, 0);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
@@ -55,8 +55,9 @@ export default class {
 
     dirLight.castShadow = true;
 
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
+    // Qualità ombre
+    dirLight.shadow.mapSize.width = 4096;
+    dirLight.shadow.mapSize.height = 4096;
 
     const d = 50;
 

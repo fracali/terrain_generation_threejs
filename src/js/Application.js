@@ -56,6 +56,7 @@ export default class Application {
     this.renderer.physicallyCorrectLights = true;
     this.renderer.autoClear = false;
     this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     // Resize event
     this.sizes.on("resize", () => {
@@ -87,7 +88,6 @@ export default class Application {
       config: this.config,
     });
 
-    console.log(this.camera.instance);
   }
 
   setHelpers() {
@@ -99,10 +99,6 @@ export default class Application {
   }
 
   setWorld() {
-    /* let floor = new Floor();
-    floor.geometry.rotateX(Math.PI * -0.5);
-    this.scene?.add(floor.container); */
-
     this.world = new World({
       config: this.config,
       resources: this.resources,
@@ -115,8 +111,6 @@ export default class Application {
   }
 
   setSky() {
-    // SKYDOME
-
     if (!this.scene) return;
     if (!this.scene.fog) return;
 
@@ -148,7 +142,6 @@ export default class Application {
 
     const sky = new THREE.Mesh(skyGeo, skyMat);
     this.scene.add(sky);
-    console.log("sky");
   }
 
   setFPSCounter() {

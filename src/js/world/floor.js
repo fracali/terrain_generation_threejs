@@ -1,3 +1,4 @@
+import ImprovedNoise from "improved-noise";
 import * as THREE from "three";
 import FloorMaterial from "../materials/floor_mat";
 
@@ -15,6 +16,16 @@ export default class Floor {
     // Mesh
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.receiveShadow = true;
+
+    this.setupNoise();
+    this.generateTerrain();
+
     this.container.add(this.mesh);
   }
+
+  setupNoise() {
+    this.perlin = ImprovedNoise();
+  }
+
+  generateTerrain() {}
 }

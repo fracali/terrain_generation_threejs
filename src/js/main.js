@@ -26,7 +26,6 @@ function setup() {
   setupRenderer();
   setupFPSCounter();
   setupControls();
-  setupLights();
   setupWorld();
   setupDebug();
 }
@@ -60,10 +59,6 @@ function setupFPSCounter() {
 
 function setupControls() {
   controls = new OrbitControls(camera, renderer.domElement);
-}
-
-function setupLights() {
-  //scene.add(Lights.ambientLight());
 }
 
 function setupWorld() {

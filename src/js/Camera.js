@@ -40,8 +40,5 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
-    console.log("OrbitControls", this.orbitControls);
-    //this.orbitControls.enabled = true;
-    //this.orbitControls.zoomSpeed = 0.5;
   }
 }

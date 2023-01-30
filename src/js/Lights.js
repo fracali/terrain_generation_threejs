@@ -13,7 +13,6 @@ export default class Lights {
     const ambientLightObj = new THREE.Object3D();
     ambientLightObj.add(ambientLight);
     this.container.push(ambientLightObj);
-    console.log("---------lights:", this.container);
   }
 
   setDirectionalLight() {
