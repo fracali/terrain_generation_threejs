@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import Floor from "./floor";
 
-export default class {
+export default class World {
   constructor(_options) {
     // Options
     this.config = _options.config;
@@ -11,6 +11,7 @@ export default class {
     this.camera = _options.camera;
     this.renderer = _options.renderer;
     this.passes = _options.passes;
+    this.terrainNoise = _options.terrainNoise;
 
     // Set up
     this.container = new THREE.Object3D();
@@ -74,7 +75,7 @@ export default class {
   }
 
   setFloor() {
-    this.floor = new Floor();
+    this.floor = new Floor({ terrainNoise: this.terrainNoise });
     //this.floor.geometry.rotateX(Math.PI * -0.5);
     this.container.add(this.floor.container);
   }

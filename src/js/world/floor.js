@@ -1,12 +1,13 @@
-import ImprovedNoise from "improved-noise";
 import * as THREE from "three";
+import Constants from "../Constants";
 import FloorMaterial from "../materials/floor_mat";
 
 export default class Floor {
   constructor(_options) {
-    this.worldWidth = 512;
-    this.worldDepth = 512;
-    this.heightIntensity = 2;
+    this.worldWidth = Constants.worldWidth;
+    this.worldDepth = Constants.worldDepth;
+
+    this.heightIntensity = Constants.terrainHeightIntensity;
 
     // Container
     this.container = new THREE.Object3D();
@@ -26,40 +27,12 @@ export default class Floor {
     // Mesh
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.receiveShadow = true;
+    this.mesh.castShadow = true;
 
-    this.data = this.generateHeight(this.worldWidth, this.worldDepth);
+    this.data = _options.terrainNoise;
     this.generateTerrain();
 
     this.container.add(this.mesh);
-  }
-
-  generateHeight(width, height) {
-    /* let seed = Math.PI / 4;
-    window.Math.random = function () {
-      const x = Math.sin(seed++) * 10000;
-      return x - Math.floor(x);
-    }; */
-
-    const size = width * height;
-    const data = new Uint8Array(size);
-    const perlin = ImprovedNoise();
-    const z = Math.random() * 100;
-
-    let quality = 1;
-
-    for (let j = 0; j < 4; j++) {
-      for (let i = 0; i < size; i++) {
-        const x = i % width,
-          y = ~~(i / width);
-        data[i] += Math.abs(
-          perlin.noise(x / quality, y / quality, z) * quality * 1.75
-        );
-      }
-
-      quality *= 5;
-    }
-
-    return data;
   }
 
   generateTerrain() {
@@ -70,7 +43,6 @@ export default class Floor {
         i,
         this.data[i] * this.heightIntensity - this.heightIntensity * 50
       );
-      //vertices[j + 1] = this.data[i] * 10;
     }
   }
 }
