@@ -75,7 +75,7 @@ export default class {
 
   setFloor() {
     this.floor = new Floor();
-    this.floor.geometry.rotateX(Math.PI * -0.5);
+    //this.floor.geometry.rotateX(Math.PI * -0.5);
     this.container.add(this.floor.container);
   }
 }

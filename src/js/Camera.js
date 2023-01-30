@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import Constants from "./Constants";
 
 export default class Camera {
   constructor(_options) {
@@ -16,10 +17,10 @@ export default class Camera {
   setInstance() {
     // Set up
     this.instance = new THREE.PerspectiveCamera(
-      75,
+      Constants.cameraFov,
       this.sizes.viewport.width / this.sizes.viewport.height,
-      0.001,
-      1000
+      Constants.cameraNear,
+      Constants.cameraFar
     );
     this.instance.lookAt(new THREE.Vector3());
     this.instance.position.set(0, 2.5, 10);

@@ -8,6 +8,7 @@ import World from "./world/index";
 import skyFragmentShader from "../shaders/sky/sky_fragment.glsl";
 // @ts-ignore
 import skyVertexShader from "../shaders/sky/sky_vertex.glsl";
+import Constants from "./Constants";
 
 export default class Application {
   constructor(_options) {
@@ -40,7 +41,11 @@ export default class Application {
     this.scene.background = new THREE.Color().setHSL(0.6, 0, 1);
 
     // Fog
-    this.scene.fog = new THREE.Fog(this.scene.background, 1, 5000);
+    this.scene.fog = new THREE.Fog(
+      this.scene.background,
+      Constants.fogNear,
+      Constants.fogFar
+    );
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -87,7 +92,6 @@ export default class Application {
       renderer: this.renderer,
       config: this.config,
     });
-
   }
 
   setHelpers() {
@@ -119,12 +123,12 @@ export default class Application {
     const uniforms = {
       topColor: { value: new THREE.Color(0x0077ff) },
       bottomColor: { value: new THREE.Color(0xffffff) },
-      offset: { value: 33 },
+      offset: { value: 300 },
       exponent: { value: 0.6 },
     };
 
     // Copia di hemiLight in world/index.js
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
     hemiLight.color.setHSL(0.6, 1, 0.6);
     hemiLight.groundColor.setHSL(0.095, 1, 0.75);
     hemiLight.position.set(0, 50, 0);
@@ -132,7 +136,7 @@ export default class Application {
 
     this.scene.fog.color.copy(uniforms["bottomColor"].value);
 
-    const skyGeo = new THREE.SphereGeometry(4000, 32, 15);
+    const skyGeo = new THREE.SphereGeometry(Constants.skyRadius, 32, 15);
     const skyMat = new THREE.ShaderMaterial({
       uniforms: uniforms,
       vertexShader: vertexShader,
