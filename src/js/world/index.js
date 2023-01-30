@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Tree from "./Tree";
 import Floor from "./floor";
 
 export default class World {
@@ -24,13 +25,16 @@ export default class World {
   }
 
   addDebugSphere() {
-    const geometry = new THREE.SphereGeometry(1, 50, 50);
+    /* const geometry = new THREE.SphereGeometry(1, 50, 50);
     geometry.translate(0, 2, 0);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     const cube = new THREE.Mesh(geometry, material);
     cube.castShadow = true;
     cube.receiveShadow = true;
-    this.container.add(cube);
+    this.container.add(cube); */
+
+    const tree = new Tree();
+    this.container.add(tree.container);
   }
 
   setAxes() {
