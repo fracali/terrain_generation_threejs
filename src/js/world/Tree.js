@@ -1,5 +1,9 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+// @ts-ignore
+import treeModel from "../../assets/resources/pine_tree.fbx?url";
+// @ts-ignore
+import treeTexture from "../../assets/textures/pine_tree.png?url";
 
 export default class Tree {
   constructor(_options) {
@@ -11,7 +15,7 @@ export default class Tree {
 
   loadMaterial() {
     const loader = new THREE.TextureLoader();
-    loader.load("../../../public/assets/textures/pine_tree.png", (texture) => {
+    loader.load(treeTexture, (texture) => {
       this.material = new THREE.MeshStandardMaterial({
         map: texture,
         transparent: true,
@@ -22,7 +26,7 @@ export default class Tree {
 
   loadModel() {
     const loader = new FBXLoader();
-    loader.load("../../../public/assets/resources/pine_tree.fbx", (object) => {
+    loader.load(treeModel, (object) => {
       object.scale.setScalar(0.05);
       object.traverse((child) => {
         // @ts-ignore

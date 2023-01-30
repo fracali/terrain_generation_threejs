@@ -7,4 +7,5 @@ export default {
     emptyOutDir: true,
   },
   plugins: [glsl()],
+  assetInclude: ['**/*.png', '**/*.fbx']
 };
