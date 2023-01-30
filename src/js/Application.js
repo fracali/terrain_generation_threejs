@@ -22,7 +22,7 @@ export default class Application {
     this.setConfig();
     this.setRenderer();
     this.setCamera();
-    this.setFPSCounter();
+    //this.setFPSCounter();
     this.setWorld();
     this.setSky();
     //this.setHelpers();
