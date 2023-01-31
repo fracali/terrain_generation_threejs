@@ -6,8 +6,8 @@ import {
   HemisphereLightHelper,
   Object3D,
 } from "three";
+import Floor from "./Floor";
 import Tree from "./Tree";
-import Floor from "./floor";
 
 export default class World {
   constructor(
