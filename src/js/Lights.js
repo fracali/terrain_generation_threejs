@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { AmbientLight, Object3D, DirectionalLight, DirectionalLightHelper } from "three";
 
 export default class Lights {
   constructor() {
@@ -8,21 +8,21 @@ export default class Lights {
   }
 
   setAmbientLight() {
-    const ambientLight = new THREE.AmbientLight(0x404040);
+    const ambientLight = new AmbientLight(0x404040);
     this.ambientLight = ambientLight;
-    const ambientLightObj = new THREE.Object3D();
+    const ambientLightObj = new Object3D();
     ambientLightObj.add(ambientLight);
     this.container.push(ambientLightObj);
   }
 
   setDirectionalLight() {
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(10, 10, 10);
     this.directionalLight = directionalLight;
     this.container.push(directionalLight);
 
     // Helper
-    const directionalLightHelper = new THREE.DirectionalLightHelper(
+    const directionalLightHelper = new DirectionalLightHelper(
       directionalLight,
       0.2,
       0xff0000

@@ -1,4 +1,17 @@
-import * as THREE from "three";
+import {
+  AxesHelper,
+  BackSide,
+  Color,
+  Fog,
+  GridHelper,
+  HemisphereLight,
+  Mesh,
+  PCFSoftShadowMap,
+  Scene,
+  ShaderMaterial,
+  SphereGeometry,
+  WebGLRenderer,
+} from "three";
 import Camera from "./Camera";
 import FPSCounter from "./utils/FPSCounter";
 import Sizes from "./utils/Sizes";
@@ -41,20 +54,20 @@ export default class Application {
 
   setRenderer() {
     // Scene
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
 
     // Sky
-    this.scene.background = new THREE.Color().setHSL(0.6, 0, 1);
+    this.scene.background = new Color().setHSL(0.6, 0, 1);
 
     // Fog
-    this.scene.fog = new THREE.Fog(
+    this.scene.fog = new Fog(
       this.scene.background,
       Constants.fogNear,
       Constants.fogFar
     );
 
     // Renderer
-    this.renderer = new THREE.WebGLRenderer({
+    this.renderer = new WebGLRenderer({
       canvas: this.$canvas,
       antialias: true,
       alpha: true,
@@ -67,7 +80,7 @@ export default class Application {
     this.renderer.physicallyCorrectLights = true;
     this.renderer.autoClear = false;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
 
     // Resize event
     this.sizes.on("resize", () => {
@@ -101,10 +114,10 @@ export default class Application {
   }
 
   setHelpers() {
-    let axesHelper = new THREE.AxesHelper(5);
+    let axesHelper = new AxesHelper(5);
     this.scene?.add(axesHelper);
 
-    let gridHelper = new THREE.GridHelper(10, 10);
+    let gridHelper = new GridHelper(10, 10);
     this.scene?.add(gridHelper);
   }
 
@@ -128,14 +141,14 @@ export default class Application {
     const vertexShader = skyVertexShader;
     const fragmentShader = skyFragmentShader;
     const uniforms = {
-      topColor: { value: new THREE.Color(0x0077ff) },
-      bottomColor: { value: new THREE.Color(0xffffff) },
+      topColor: { value: new Color(0x0077ff) },
+      bottomColor: { value: new Color(0xffffff) },
       offset: { value: 300 },
       exponent: { value: 0.6 },
     };
 
     // Copia di hemiLight in world/index.js
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.5);
+    const hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.5);
     hemiLight.color.setHSL(0.6, 1, 0.6);
     hemiLight.groundColor.setHSL(0.095, 1, 0.75);
     hemiLight.position.set(0, 50, 0);
@@ -143,15 +156,15 @@ export default class Application {
 
     this.scene.fog.color.copy(uniforms["bottomColor"].value);
 
-    const skyGeo = new THREE.SphereGeometry(Constants.skyRadius, 32, 15);
-    const skyMat = new THREE.ShaderMaterial({
+    const skyGeo = new SphereGeometry(Constants.skyRadius, 32, 15);
+    const skyMat = new ShaderMaterial({
       uniforms: uniforms,
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      side: THREE.BackSide,
+      side: BackSide,
     });
 
-    const sky = new THREE.Mesh(skyGeo, skyMat);
+    const sky = new Mesh(skyGeo, skyMat);
     this.scene.add(sky);
   }
 

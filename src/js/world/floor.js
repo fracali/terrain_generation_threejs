@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { Mesh, Object3D, PlaneGeometry } from "three";
 import Constants from "../Constants";
 import FloorMaterial from "../materials/floor_mat";
 
@@ -10,10 +10,10 @@ export default class Floor {
     this.heightIntensity = Constants.terrainHeightIntensity;
 
     // Container
-    this.container = new THREE.Object3D();
+    this.container = new Object3D();
 
     // Geometry
-    this.geometry = new THREE.PlaneGeometry(
+    this.geometry = new PlaneGeometry(
       5000,
       5000,
       this.worldWidth - 1,
@@ -25,7 +25,7 @@ export default class Floor {
     this.material = FloorMaterial();
 
     // Mesh
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new Mesh(this.geometry, this.material);
     this.mesh.receiveShadow = true;
     this.mesh.castShadow = true;
 
@@ -36,9 +36,11 @@ export default class Floor {
   }
 
   generateTerrain() {
+    // @ts-ignore
     const vertices = this.geometry.attributes.position.array;
 
     for (let i = 0, j = 0, l = vertices.length; i < l; i++, j += 3) {
+      // @ts-ignore
       this.geometry.attributes.position.setY(
         i,
         this.data[i] * this.heightIntensity - this.heightIntensity * 50

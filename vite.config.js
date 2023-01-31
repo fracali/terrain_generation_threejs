@@ -7,5 +7,12 @@ export default {
     emptyOutDir: true,
   },
   plugins: [glsl()],
-  assetInclude: ['**/*.png', '**/*.fbx']
+  assetInclude: [
+    "**/*.png",
+    "**/*.ico",
+    "**/*.fbx",
+    "**/*.xml",
+    "**/*.glsl",
+    "**/*.webmanifest",
+  ],
 };
