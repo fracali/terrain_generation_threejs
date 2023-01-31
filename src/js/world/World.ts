@@ -6,7 +6,9 @@ import {
   HemisphereLightHelper,
   Object3D,
 } from "three";
+import Constants from "../Constants";
 import Floor from "./Floor";
+import TerrainNoise from "./TerrainNoise";
 import Tree from "./Tree";
 
 export default class World {
@@ -36,7 +38,19 @@ export default class World {
     cube.receiveShadow = true;
     this.container.add(cube); */
 
+    const noiseInstance = new TerrainNoise();
+    const noiseHeight = noiseInstance.getNoiseValueAtPosition(
+      this.terrainNoise,
+      0,
+      0,
+      Constants.worldWidth,
+      Constants.worldDepth
+    );
+
+    console.log("noiseHeight", noiseHeight);
+
     const tree = new Tree();
+    tree.container.position.setY(noiseHeight);
     this.container.add(tree.container);
   }
 

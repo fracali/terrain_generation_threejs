@@ -40,7 +40,7 @@ export default class Floor {
       // @ts-ignore
       this.geometry.attributes.position.setY(
         i,
-        this.terrainNoise[i] * this.heightIntensity - this.heightIntensity * 50
+        this.terrainNoise[i] * this.heightIntensity
       );
     }
   }

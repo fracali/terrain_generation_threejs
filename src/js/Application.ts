@@ -22,7 +22,7 @@ import skyFragmentShader from "../shaders/sky/sky_fragment.glsl";
 // @ts-ignore
 import skyVertexShader from "../shaders/sky/sky_vertex.glsl";
 import Constants from "./Constants";
-import noise from "./world/noise";
+import Noise from "./world/TerrainNoise";
 
 export default class Application {
   constructor(
@@ -36,9 +36,9 @@ export default class Application {
     private sizes = new Sizes(),
     private fpsCounter: FPSCounter,
     private camera: Camera,
-    private world: World
-  ) // TODO: private resources = new Resources();
-  {
+    private world: World,
+    private noiseInstance: Noise = new Noise() // TODO: private resources = new Resources();
+  ) {
     this.$canvas = _options.$canvas;
 
     this.setConfig();
@@ -57,7 +57,10 @@ export default class Application {
   }
 
   setNoise() {
-    this.terrainNoise = noise(Constants.worldWidth, Constants.worldDepth);
+    this.terrainNoise = this.noiseInstance.getNoise(
+      Constants.worldWidth,
+      Constants.worldDepth
+    );
   }
 
   setRenderer() {

@@ -35,7 +35,6 @@ export default class Tree {
       object.traverse((child) => {
         if ((<THREE.Mesh>child).isMesh) {
           if ((<THREE.Mesh>child).material && this.material) {
-            console.log("has material");
             (<THREE.Material>(<THREE.Mesh>child).material) = this.material;
           }
           (<THREE.Mesh>child).castShadow = true;
