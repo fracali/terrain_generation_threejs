@@ -1,9 +1,4 @@
-import {
-  DoubleSide,
-  MeshStandardMaterial,
-  Object3D,
-  TextureLoader,
-} from "three";
+import { MeshStandardMaterial, Object3D, TextureLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 // @ts-ignore
 import treeModel from "../../assets/resources/pine_tree.fbx?url";
@@ -16,11 +11,10 @@ export default class Tree {
     public container: Object3D = new Object3D(),
     private material?: MeshStandardMaterial
   ) {
-    this.loadMaterial();
-    this.loadModel();
+    this.loadMaterialThenModel();
   }
 
-  loadMaterial() {
+  loadMaterialThenModel() {
     const loader = new TextureLoader();
     loader.load(treeTexture, (texture) => {
       this.material = new MeshStandardMaterial({
@@ -28,6 +22,9 @@ export default class Tree {
         transparent: true,
         alphaTest: 0.5,
       });
+
+      // Carica il modello solo dopo aver caricato il materiale
+      this.loadModel();
     });
   }
 
@@ -36,14 +33,13 @@ export default class Tree {
     loader.load(treeModel, (object) => {
       object.scale.setScalar(0.05);
       object.traverse((child) => {
-        // @ts-ignore
-        if (child.isMesh) {
-          // @ts-ignore
-          child.material = this.material;
-          // @ts-ignore
-          child.material.side = DoubleSide;
-          child.castShadow = true;
-          child.receiveShadow = true;
+        if ((<THREE.Mesh>child).isMesh) {
+          if ((<THREE.Mesh>child).material && this.material) {
+            console.log("has material");
+            (<THREE.Material>(<THREE.Mesh>child).material) = this.material;
+          }
+          (<THREE.Mesh>child).castShadow = true;
+          (<THREE.Mesh>child).receiveShadow = true;
         }
       });
       this.container.add(object);
