@@ -1,15 +1,15 @@
-import EventEmitter from "./EventEmitter.js";
+import EventEmitter from "./EventEmitter";
 
 export default class Sizes extends EventEmitter {
-  /**
-   * Constructor
-   */
-  constructor() {
+  constructor(
+    public viewport: any = {},
+    private $sizeViewport = document.createElement("div"),
+    private width = 0,
+    private height = 0
+  ) {
     super();
 
     // Viewport size
-    this.viewport = {};
-    this.$sizeViewport = document.createElement("div");
     this.$sizeViewport.style.width = "100vw";
     this.$sizeViewport.style.height = "100vh";
     this.$sizeViewport.style.position = "absolute";

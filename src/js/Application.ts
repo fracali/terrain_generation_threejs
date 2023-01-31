@@ -16,7 +16,7 @@ import Camera from "./Camera";
 import FPSCounter from "./utils/FPSCounter";
 import Sizes from "./utils/Sizes";
 import Time from "./utils/Time";
-import World from "./world/index";
+import World from "./world/World";
 // @ts-ignore
 import skyFragmentShader from "../shaders/sky/sky_fragment.glsl";
 // @ts-ignore
@@ -25,13 +25,21 @@ import Constants from "./Constants";
 import noise from "./world/noise";
 
 export default class Application {
-  constructor(_options) {
+  constructor(
+    _options: any,
+    private config: any,
+    private terrainNoise: Uint8Array,
+    private scene: Scene,
+    private renderer: WebGLRenderer,
+    private $canvas: any,
+    private time = new Time(),
+    private sizes = new Sizes(),
+    private fpsCounter: FPSCounter,
+    private camera: Camera,
+    private world: World
+  ) // TODO: private resources = new Resources();
+  {
     this.$canvas = _options.$canvas;
-
-    this.time = new Time();
-    this.sizes = new Sizes();
-    this.resources = null;
-    // TODO: this.resources = new Resources();
 
     this.setConfig();
     this.setRenderer();
@@ -105,12 +113,7 @@ export default class Application {
   }
 
   setCamera() {
-    this.camera = new Camera({
-      time: this.time,
-      sizes: this.sizes,
-      renderer: this.renderer,
-      config: this.config,
-    });
+    this.camera = new Camera(this.time, this.sizes, this.renderer, this.config);
   }
 
   setHelpers() {
@@ -122,15 +125,7 @@ export default class Application {
   }
 
   setWorld() {
-    this.world = new World({
-      config: this.config,
-      resources: this.resources,
-      time: this.time,
-      sizes: this.sizes,
-      camera: this.camera,
-      renderer: this.renderer,
-      terrainNoise: this.terrainNoise,
-    });
+    this.world = new World(this.terrainNoise);
     this.scene?.add(this.world.container);
   }
 

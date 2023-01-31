@@ -3,13 +3,15 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Constants from "./Constants";
 
 export default class Camera {
-  constructor(_options) {
-    // Options
-    this.time = _options.time;
-    this.sizes = _options.sizes;
-    this.renderer = _options.renderer;
-    this.config = _options.config;
-
+  constructor(
+    private time: any,
+    private sizes: any,
+    private renderer: any,
+    private config: any,
+    _options?: any,
+    public instance?: PerspectiveCamera,
+    private orbitControls?: OrbitControls
+  ) {
     this.setInstance();
     this.setOrbitControls();
   }

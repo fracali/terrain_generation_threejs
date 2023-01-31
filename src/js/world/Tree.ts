@@ -11,9 +11,11 @@ import treeModel from "../../assets/resources/pine_tree.fbx?url";
 import treeTexture from "../../assets/textures/pine_tree.png?url";
 
 export default class Tree {
-  constructor(_options) {
-    this.container = new Object3D();
-
+  constructor(
+    _options?: any,
+    public container: Object3D = new Object3D(),
+    private material?: MeshStandardMaterial
+  ) {
     this.loadMaterial();
     this.loadModel();
   }

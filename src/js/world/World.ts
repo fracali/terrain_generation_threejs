@@ -1,19 +1,22 @@
-import { AxesHelper, DirectionalLight, DirectionalLightHelper, HemisphereLight, HemisphereLightHelper, Object3D } from "three";
+import {
+  AxesHelper,
+  DirectionalLight,
+  DirectionalLightHelper,
+  HemisphereLight,
+  HemisphereLightHelper,
+  Object3D,
+} from "three";
 import Tree from "./Tree";
 import Floor from "./floor";
 
 export default class World {
-  constructor(_options) {
-    // Options
-    this.config = _options.config;
-    this.resources = _options.resources;
-    this.time = _options.time;
-    this.sizes = _options.sizes;
-    this.camera = _options.camera;
-    this.renderer = _options.renderer;
-    this.passes = _options.passes;
-    this.terrainNoise = _options.terrainNoise;
-
+  constructor(
+    private terrainNoise: Uint8Array,
+    public container: Object3D = new Object3D(),
+    private axis?: AxesHelper,
+    private floor?: Floor,
+    private resources?: any
+  ) {
     // Set up
     this.container = new Object3D();
     this.container.matrixAutoUpdate = false;
@@ -33,8 +36,8 @@ export default class World {
     cube.receiveShadow = true;
     this.container.add(cube); */
 
-    /* const tree = new Tree();
-    this.container.add(tree.container); */
+    const tree = new Tree();
+    this.container.add(tree.container);
   }
 
   setAxes() {
@@ -43,6 +46,7 @@ export default class World {
   }
 
   setLights() {
+    // TODO: move lights to a separate class
     const hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.6);
     hemiLight.color.setHSL(0.6, 1, 0.6);
     hemiLight.groundColor.setHSL(0.095, 1, 0.75);
@@ -79,8 +83,7 @@ export default class World {
   }
 
   setFloor() {
-    this.floor = new Floor({ terrainNoise: this.terrainNoise });
-    //this.floor.geometry.rotateX(Math.PI * -0.5);
+    this.floor = new Floor(this.terrainNoise);
     this.container.add(this.floor.container);
   }
 }

@@ -1,9 +1,9 @@
 import ImprovedNoise from "improved-noise";
 
-export default function (width, height) {
+export default function (width: number, height: number) {
   const size = width * height;
   const data = new Uint8Array(size);
-  const perlin = ImprovedNoise();
+  const perlin = new ImprovedNoise();
   const z = Math.random() * 100;
 
   let quality = 1;

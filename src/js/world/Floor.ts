@@ -1,17 +1,18 @@
-import { Mesh, Object3D, PlaneGeometry } from "three";
+import { Mesh, MeshStandardMaterial, Object3D, PlaneGeometry } from "three";
 import Constants from "../Constants";
 import FloorMaterial from "../materials/floor_mat";
 
 export default class Floor {
-  constructor(_options) {
-    this.worldWidth = Constants.worldWidth;
-    this.worldDepth = Constants.worldDepth;
-
-    this.heightIntensity = Constants.terrainHeightIntensity;
-
-    // Container
-    this.container = new Object3D();
-
+  constructor(
+    private terrainNoise: Uint8Array,
+    public container: Object3D = new Object3D(),
+    private worldWidth: number = Constants.worldWidth,
+    private worldDepth: number = Constants.worldDepth,
+    private heightIntensity: number = Constants.terrainHeightIntensity,
+    private geometry?: PlaneGeometry,
+    private material: MeshStandardMaterial = FloorMaterial(),
+    private mesh?: Mesh
+  ) {
     // Geometry
     this.geometry = new PlaneGeometry(
       5000,
@@ -21,15 +22,11 @@ export default class Floor {
     );
     this.geometry.rotateX(-Math.PI / 2);
 
-    // Material
-    this.material = FloorMaterial();
-
     // Mesh
     this.mesh = new Mesh(this.geometry, this.material);
     this.mesh.receiveShadow = true;
     this.mesh.castShadow = true;
 
-    this.data = _options.terrainNoise;
     this.generateTerrain();
 
     this.container.add(this.mesh);
@@ -43,7 +40,7 @@ export default class Floor {
       // @ts-ignore
       this.geometry.attributes.position.setY(
         i,
-        this.data[i] * this.heightIntensity - this.heightIntensity * 50
+        this.terrainNoise[i] * this.heightIntensity - this.heightIntensity * 50
       );
     }
   }
