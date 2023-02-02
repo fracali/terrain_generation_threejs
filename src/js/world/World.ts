@@ -12,16 +12,20 @@ import TerrainNoise from "./TerrainNoise";
 import Tree from "./Tree";
 
 export default class World {
+  worldCenterX: number;
+  worldCenterZ: number;
+
   constructor(
     private terrainNoise: Uint8Array,
     public container: Object3D = new Object3D(),
     private axis?: AxesHelper,
-    private floor?: Floor,
-    private resources?: any
+    private floor?: Floor //private resources?: any
   ) {
     // Set up
     this.container = new Object3D();
     this.container.matrixAutoUpdate = false;
+    this.worldCenterX = Constants.terrainWidth / 2;
+    this.worldCenterZ = Constants.terrainDepth / 2;
 
     this.setAxes();
     this.setLights();
@@ -30,32 +34,30 @@ export default class World {
   }
 
   addTree() {
-    /* const geometry = new SphereGeometry(1, 50, 50);
-    geometry.translate(0, 2, 0);
-    const material = new MeshStandardMaterial({ color: 0x00ff00 });
-    const cube = new Mesh(geometry, material);
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    this.container.add(cube); */
+    if (!this.floor) {
+      return;
+    }
+    const treeX = 500;
+    const treeZ = 500;
 
     const noiseInstance = new TerrainNoise();
     const noiseHeight = noiseInstance.getNoiseValueAtPosition(
       this.terrainNoise,
-      0,
-      0,
-      Constants.worldWidth,
-      Constants.worldDepth
+      treeX,
+      treeZ
     );
-
-    console.log("noiseHeight", noiseHeight);
-
     const tree = new Tree();
-    tree.container.position.setY(noiseHeight);
+    tree.container.position.set(treeX, 0, treeZ);
+    console.log("tree.height", noiseHeight);
+    tree.container.position.setY(
+      noiseHeight * Constants.terrainHeightIntensity
+    );
+    //tree.container.scale.set(0.1, 0.1, 0.1);
     this.container.add(tree.container);
   }
 
   setAxes() {
-    this.axis = new AxesHelper();
+    this.axis = new AxesHelper(1000);
     this.container.add(this.axis);
   }
 
@@ -73,7 +75,7 @@ export default class World {
     const dirLight = new DirectionalLight(0xffffff, 1);
     dirLight.color.setHSL(0.1, 1, 0.95);
     dirLight.position.set(-1, 1.75, 1);
-    dirLight.position.multiplyScalar(30);
+    dirLight.position.multiplyScalar(500);
     this.container.add(dirLight);
 
     dirLight.castShadow = true;
@@ -92,7 +94,7 @@ export default class World {
     dirLight.shadow.camera.far = 3500;
     dirLight.shadow.bias = -0.0001;
 
-    const dirLightHelper = new DirectionalLightHelper(dirLight, 10);
+    const dirLightHelper = new DirectionalLightHelper(dirLight, 10, 0xff0000);
     this.container.add(dirLightHelper);
   }
 

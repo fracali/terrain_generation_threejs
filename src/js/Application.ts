@@ -41,11 +41,11 @@ export default class Application {
   ) {
     this.$canvas = _options.$canvas;
 
+    this.setNoise();
     this.setConfig();
     this.setRenderer();
-    this.setCamera();
     //this.setFPSCounter();
-    this.setNoise();
+    this.setCamera();
     this.setWorld();
     this.setSky();
     //this.setHelpers();
@@ -58,8 +58,8 @@ export default class Application {
 
   setNoise() {
     this.terrainNoise = this.noiseInstance.getNoise(
-      Constants.worldWidth,
-      Constants.worldDepth
+      Constants.terrainWidthRes,
+      Constants.terrainDepthRes
     );
   }
 
@@ -116,7 +116,13 @@ export default class Application {
   }
 
   setCamera() {
-    this.camera = new Camera(this.time, this.sizes, this.renderer, this.config);
+    this.camera = new Camera(
+      this.terrainNoise,
+      this.time,
+      this.sizes,
+      this.renderer,
+      this.config
+    );
   }
 
   setHelpers() {
