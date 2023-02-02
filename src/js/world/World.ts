@@ -2,8 +2,8 @@ import { AxesHelper, Object3D } from "three";
 import Constants from "../Constants";
 import DirLight from "../lights/DirLight";
 import HemiLight from "../lights/HemiLight";
+import Instancing from "../utils/Instancing";
 import Floor from "./Floor";
-import TerrainNoise from "./TerrainNoise";
 import Tree from "./Tree";
 
 export default class World {
@@ -25,17 +25,22 @@ export default class World {
     this.setAxes();
     this.setLights();
     this.setFloor();
-    this.addTree();
+    this.addTrees();
   }
 
-  addTree() {
+  addTrees() {
     if (!this.floor) {
       return;
     }
-    const treeX = 500;
-    const treeZ = 500;
 
-    const noiseInstance = new TerrainNoise();
+    const instancing = new Instancing(
+      new Tree().container,
+      this.floor.container,
+      100
+    );
+    this.container.add(instancing.container);
+    console.log(instancing.container);
+    /* const noiseInstance = new TerrainNoise();
     const noiseHeight = noiseInstance.getNoiseValueAtPosition(
       this.terrainNoise,
       treeX,
@@ -45,8 +50,8 @@ export default class World {
     tree.container.position.set(treeX, 0, treeZ);
     tree.container.position.setY(
       noiseHeight * Constants.terrainHeightIntensity
-    );
-    this.container.add(tree.container);
+    ); */
+    //this.container.add(tree.container);
   }
 
   setAxes() {
