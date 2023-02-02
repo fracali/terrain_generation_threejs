@@ -1,15 +1,10 @@
 import {
   AxesHelper,
-  BackSide,
   Color,
   Fog,
   GridHelper,
-  HemisphereLight,
-  Mesh,
   PCFSoftShadowMap,
   Scene,
-  ShaderMaterial,
-  SphereGeometry,
   WebGLRenderer,
 } from "three";
 import Camera from "./Camera";
@@ -17,11 +12,9 @@ import FPSCounter from "./utils/FPSCounter";
 import Sizes from "./utils/Sizes";
 import Time from "./utils/Time";
 import World from "./world/World";
-// @ts-ignore
-import skyFragmentShader from "../shaders/sky/sky_fragment.glsl";
-// @ts-ignore
-import skyVertexShader from "../shaders/sky/sky_vertex.glsl";
+
 import Constants from "./Constants";
+import Sky from "./world/Sky";
 import Noise from "./world/TerrainNoise";
 
 export default class Application {
@@ -142,34 +135,7 @@ export default class Application {
     if (!this.scene) return;
     if (!this.scene.fog) return;
 
-    const vertexShader = skyVertexShader;
-    const fragmentShader = skyFragmentShader;
-    const uniforms = {
-      topColor: { value: new Color(0x0077ff) },
-      bottomColor: { value: new Color(0xffffff) },
-      offset: { value: 300 },
-      exponent: { value: 0.6 },
-    };
-
-    // Copia di hemiLight in world/index.js
-    const hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.5);
-    hemiLight.color.setHSL(0.6, 1, 0.6);
-    hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-    hemiLight.position.set(0, 50, 0);
-    uniforms["topColor"].value.copy(hemiLight.color);
-
-    this.scene.fog.color.copy(uniforms["bottomColor"].value);
-
-    const skyGeo = new SphereGeometry(Constants.skyRadius, 32, 15);
-    const skyMat = new ShaderMaterial({
-      uniforms: uniforms,
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
-      side: BackSide,
-    });
-
-    const sky = new Mesh(skyGeo, skyMat);
-    this.scene.add(sky);
+    this.scene.add(new Sky(this.scene, this.terrainNoise).container);
   }
 
   setFPSCounter() {

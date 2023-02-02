@@ -23,8 +23,6 @@ export default class TerrainNoise {
       quality *= 5;
     }
 
-    console.log("noise at supposed tree location", data[100]);
-    console.log("all noise", data);
     return data;
   }
 
@@ -40,31 +38,10 @@ export default class TerrainNoise {
 
     // Per i valori vicini alla fine del terreno
     if (index > noise.length - 1) {
-      console.log("fallback");
       return noise[noise.length - 1];
     }
 
-    console.log("x", x);
-    console.log("xAsRes", xAsRes);
-    console.log("y", y);
-    console.log("yAsRes", yAsRes);
-    console.log("index", index);
 
     return noise[index];
-
-    /* let xAsRes = Math.round(
-      map(x, 0, Constants.terrainWidth, 0, Constants.terrainWidthRes)
-    );
-    let yAsRes = Math.round(
-      map(y, 0, Constants.terrainDepth, 0, Constants.terrainDepthRes)
-    );
-
-    console.log("xAsRes", xAsRes);
-    console.log("yAsRes", yAsRes);
-    let index = xAsRes + yAsRes * (Constants.terrainWidthRes - 1);
-
-    console.log("index", index);
-
-    return noise[index]; */
   }
 }

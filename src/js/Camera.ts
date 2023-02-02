@@ -4,8 +4,9 @@ import Constants from "./Constants";
 import TerrainNoise from "./world/TerrainNoise";
 
 export default class Camera {
-  cameraX: number = 50;
-  cameraZ: number = 50;
+  private worldCenterX: number;
+  private worldCenterZ: number;
+
   constructor(
     private terrainNoise: Uint8Array,
     private time: any,
@@ -16,9 +17,15 @@ export default class Camera {
     public instance?: PerspectiveCamera,
     private orbitControls?: OrbitControls
   ) {
+    this.worldCenterX = Constants.terrainWidth / 2;
+    this.worldCenterZ = Constants.terrainDepth / 2;
+
     this.setInstance();
+    // Se ci sono gli orbit controls viene sovrascritto il lookAt
+    //this.setLookAt(this.worldCenterX, 220, this.worldCenterZ);
+    this.moveToRandomPosition();
+    this.setHeight();
     this.setOrbitControls();
-    //this.setHeight();
   }
 
   setInstance() {
@@ -30,8 +37,7 @@ export default class Camera {
       Constants.cameraFar
     );
 
-    this.instance.lookAt(new Vector3());
-    this.instance.position.set(this.cameraX, 50, this.cameraZ);
+    this.instance.position.set(0, 0, 0);
 
     // Resize event
     this.sizes.on("resize", () => {
@@ -43,8 +49,22 @@ export default class Camera {
     });
   }
 
-  // 1500 : x = 2000 : 256
-  // (1500 x 256) / 2000
+  moveToRandomPosition() {
+    if (!this.instance) return;
+
+    const randomX = Math.random() * Constants.terrainWidth;
+    const randomZ = Math.random() * Constants.terrainDepth;
+
+    this.instance.position.set(randomX, 0, randomZ);
+  }
+
+  setLookAt(x: number, y: number, z: number) {
+    if (!this.instance) return;
+    const lookAt = new Vector3(x, y, z);
+    this.instance.lookAt(lookAt);
+    this.instance.updateProjectionMatrix();
+    console.log("Camera setLookAt", lookAt);
+  }
 
   setHeight() {
     let cameraPosition = this.instance?.position;
@@ -57,7 +77,9 @@ export default class Camera {
       cameraPosition.z
     );
 
-    this.instance?.position.setY(noiseHeight + 100);
+    this.instance?.position.setY(
+      noiseHeight * Constants.terrainHeightIntensity + 100
+    );
   }
 
   setOrbitControls() {
@@ -66,5 +88,7 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
+    this.orbitControls.target.set(this.worldCenterX, 0, this.worldCenterZ);
+    this.orbitControls.update();
   }
 }
