@@ -1,7 +1,6 @@
 import {
   AxesHelper,
   DirectionalLight,
-  DirectionalLightHelper,
   HemisphereLight,
   HemisphereLightHelper,
   Object3D,
@@ -72,30 +71,38 @@ export default class World {
     const hemiLightHelper = new HemisphereLightHelper(hemiLight, 10);
     this.container.add(hemiLightHelper);
 
+    const lightTarget = new Object3D();
+    lightTarget.position.set(this.worldCenterX, 0, this.worldCenterZ);
+
+    const dirLightHeight = Constants.terrainDepth;
+
     const dirLight = new DirectionalLight(0xffffff, 1);
     dirLight.color.setHSL(0.1, 1, 0.95);
-    dirLight.position.set(-1, 1.75, 1);
-    dirLight.position.multiplyScalar(500);
-    this.container.add(dirLight);
-
-    dirLight.castShadow = true;
+    dirLight.position.set(-1, dirLightHeight, 1);
 
     // Qualità ombre
+    dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 4096;
     dirLight.shadow.mapSize.height = 4096;
 
-    const d = 50;
+    const cameraSize = 1000;
 
-    dirLight.shadow.camera.left = -d;
-    dirLight.shadow.camera.right = d;
-    dirLight.shadow.camera.top = d;
-    dirLight.shadow.camera.bottom = -d;
+    dirLight.shadow.camera.far = 2000;
+    dirLight.shadow.camera.near = 100;
+    dirLight.shadow.camera.left = -cameraSize;
+    dirLight.shadow.camera.right = cameraSize;
+    dirLight.shadow.camera.top = cameraSize;
+    dirLight.shadow.camera.bottom = -cameraSize;
 
-    dirLight.shadow.camera.far = 3500;
-    dirLight.shadow.bias = -0.0001;
+    dirLight.target = lightTarget;
+    this.container.add(dirLight);
 
-    const dirLightHelper = new DirectionalLightHelper(dirLight, 10, 0xff0000);
-    this.container.add(dirLightHelper);
+    //Directional light helper
+    /* const helper = new CameraHelper(dirLight.shadow.camera);
+    this.container.add(helper); */
+    /* const dirLightHelper = new DirectionalLightHelper(dirLight, 10, 0xff0000);
+    this.container.add(dirLightHelper); */
+    dirLight.target.updateMatrixWorld();
   }
 
   setFloor() {
