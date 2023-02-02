@@ -47,7 +47,6 @@ export default class World {
       noiseHeight * Constants.terrainHeightIntensity
     );
     this.container.add(tree.container);
-    console.log("tree location", tree.container.position);
   }
 
   setAxes() {
@@ -56,7 +55,9 @@ export default class World {
   }
 
   setLights() {
-    this.container.add(new HemiLight(this.terrainNoise, { addHemiLightHelper: true }).container);
+    this.container.add(
+      new HemiLight(this.terrainNoise, { addHemiLightHelper: true }).container
+    );
     this.container.add(new DirLight({ addHelper: true }).container);
   }
 

@@ -63,7 +63,6 @@ export default class Camera {
     const lookAt = new Vector3(x, y, z);
     this.instance.lookAt(lookAt);
     this.instance.updateProjectionMatrix();
-    console.log("Camera setLookAt", lookAt);
   }
 
   setHeight() {

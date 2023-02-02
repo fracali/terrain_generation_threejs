@@ -65,7 +65,7 @@ export default class Application {
 
     // Fog
     this.scene.fog = new Fog(
-      this.scene.background,
+      new Color().setHex(0x3f88c5),
       Constants.fogNear,
       Constants.fogFar
     );

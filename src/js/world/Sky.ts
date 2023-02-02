@@ -26,10 +26,10 @@ export default class {
     const vertexShader = skyVertexShader;
     const fragmentShader = skyFragmentShader;
     const uniforms = {
-      topColor: { value: new Color(0x0077ff) },
-      bottomColor: { value: new Color(0xffffff) },
-      offset: { value: 1000 }, // Altezza gradient
-      exponent: { value: 0.6 },
+      topColor: { value: new Color(0x71a8d6) },
+      bottomColor: { value: new Color(0xe0ecf5) },
+      offset: { value: 0 }, // Altezza gradient
+      exponent: { value: 1 },
     };
 
     // Copia di hemiLight in world/index.js
@@ -49,6 +49,7 @@ export default class {
       fragmentShader: fragmentShader,
       side: BackSide,
     });
+    //const skyMat = new MeshStandardMaterial({ color: 0x3f88c5 });
 
     const sky = new Mesh(skyGeo, skyMat);
     this.container.add(sky);
