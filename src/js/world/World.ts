@@ -33,13 +33,19 @@ export default class World {
       return;
     }
 
+    const treeX = 500;
+    const treeZ = 500;
+
     const instancing = new Instancing(
-      new Tree().container,
+      () => new Tree(),
       this.floor.container,
-      100
+      1000,
+      this.terrainNoise
     );
     this.container.add(instancing.container);
     console.log(instancing.container);
+    console.log(this.container);
+
     /* const noiseInstance = new TerrainNoise();
     const noiseHeight = noiseInstance.getNoiseValueAtPosition(
       this.terrainNoise,
@@ -50,8 +56,8 @@ export default class World {
     tree.container.position.set(treeX, 0, treeZ);
     tree.container.position.setY(
       noiseHeight * Constants.terrainHeightIntensity
-    ); */
-    //this.container.add(tree.container);
+    );
+    this.container.add(tree.container); */
   }
 
   setAxes() {
