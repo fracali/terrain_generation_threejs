@@ -27,10 +27,10 @@ export default class TerrainNoise {
   }
 
   getNoiseValueAtPosition(noise: Uint8Array, x: number, y: number): number {
-    let xAsRes = Math.round(
+    let xAsRes = Math.floor(
       map(x, 0, Constants.terrainWidth, 0, Constants.terrainWidthRes)
     );
-    let yAsRes = Math.round(
+    let yAsRes = Math.floor(
       map(y, 0, Constants.terrainDepth, 0, Constants.terrainDepthRes)
     );
 
@@ -38,9 +38,8 @@ export default class TerrainNoise {
 
     // Per i valori vicini alla fine del terreno
     if (index > noise.length - 1) {
-      return noise[noise.length - 1];
+      return -100;
     }
-
 
     return noise[index];
   }

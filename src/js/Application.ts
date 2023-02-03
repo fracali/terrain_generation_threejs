@@ -37,7 +37,7 @@ export default class Application {
     this.setNoise();
     this.setConfig();
     this.setRenderer();
-    //this.setFPSCounter();
+    this.setFPSCounter();
     this.setCamera();
     this.setWorld();
     this.setSky();
@@ -127,7 +127,7 @@ export default class Application {
   }
 
   setWorld() {
-    this.world = new World(this.terrainNoise);
+    this.world = new World(this.terrainNoise, this.scene);
     this.scene?.add(this.world.container);
   }
 
