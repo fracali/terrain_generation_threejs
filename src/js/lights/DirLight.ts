@@ -21,7 +21,7 @@ export default class {
     const lightTarget = new Object3D();
     lightTarget.position.set(this.worldCenterX, 0, this.worldCenterZ);
 
-    const dirLightHeight = Constants.terrainDepth * 1.5;
+    const dirLightHeight = Constants.terrainDepth * 0.5;
 
     const dirLight = new DirectionalLight(0xffffff, 1);
     dirLight.color.setHSL(0.1, 1, 0.95);

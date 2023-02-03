@@ -66,7 +66,7 @@ export default class {
   }
 
   getInstanceScale(): Vector3 {
-    const minScale = 0.08;
+    const minScale = 0.05;
     const maxScale = 0.15;
 
     const scale = new Vector3();

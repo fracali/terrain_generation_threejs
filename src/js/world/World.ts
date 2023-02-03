@@ -28,7 +28,6 @@ export default class World {
     this.setFloor();
     this.addTrees();
   }
-
   async addTrees() {
     if (!this.floor) {
       return;
@@ -58,9 +57,9 @@ export default class World {
 
   setLights() {
     this.container.add(
-      new HemiLight(this.terrainNoise, { addHemiLightHelper: true }).container
+      new HemiLight(this.terrainNoise, { addHemiLightHelper: false }).container
     );
-    this.container.add(new DirLight({ addHelper: true }).container);
+    this.container.add(new DirLight({ addHelper: false }).container);
   }
 
   setFloor() {
