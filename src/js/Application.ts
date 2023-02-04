@@ -4,6 +4,7 @@ import {
   Fog,
   GridHelper,
   PCFSoftShadowMap,
+  ReinhardToneMapping,
   Scene,
   WebGLRenderer,
 } from "three";
@@ -85,6 +86,8 @@ export default class Application {
     this.renderer.autoClear = false;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = PCFSoftShadowMap;
+    this.renderer.toneMapping = ReinhardToneMapping;
+    this.renderer.toneMappingExposure = Constants.globalSceneExposure; // <---- Esposizione globale della scena
 
     // Resize event
     this.sizes.on("resize", () => {

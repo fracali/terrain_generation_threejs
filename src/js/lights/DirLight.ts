@@ -29,8 +29,8 @@ export default class {
 
     // Qualità ombre
     dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 4096;
-    dirLight.shadow.mapSize.height = 4096;
+    dirLight.shadow.mapSize.width = 1024 * 4;
+    dirLight.shadow.mapSize.height = 1024 * 4;
 
     const cameraSize = 1000;
 

@@ -15,8 +15,8 @@ export default class TreeTrunk {
     return new Promise((resolve) => {
       const loader = new GLTFLoader();
       loader.load(treeTrunkModel, (gltf) => {
-        console.log(gltf.scene);
-        resolve(gltf.scene.children[0].children[0] as Mesh);
+        const trunkMesh = gltf.scene.children[0].children[0] as Mesh;
+        resolve(trunkMesh);
       });
     });
   }

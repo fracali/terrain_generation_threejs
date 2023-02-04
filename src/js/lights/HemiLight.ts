@@ -22,7 +22,7 @@ export default class {
       worldCenterZ
     );
 
-    const hemiLight = new HemisphereLight(0xffffff, 0xffffff, 0.6);
+    const hemiLight = new HemisphereLight(0xffeeb1, 0x080820, 1);
     hemiLight.color.setHSL(0.6, 1, 0.6);
     hemiLight.groundColor.setHSL(0.095, 1, 0.75);
     hemiLight.position.set(

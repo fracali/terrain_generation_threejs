@@ -39,8 +39,6 @@ export default class World {
     const tree = new Tree();
     const treeMesh: Mesh = await tree.getMesh();
 
-    console.log(treeMesh);
-
     const instancing = new Instancing({
       object: treeMesh,
       surface: this.floor.container,
@@ -54,6 +52,7 @@ export default class World {
 
     instancing.doInstancing();
     this.container.updateMatrix();
+    this.container.updateMatrixWorld();
   }
 
   async addTreeTrunks() {
@@ -63,8 +62,6 @@ export default class World {
 
     const trunk = new TreeTrunk();
     const treeMesh: Mesh = await trunk.getMesh();
-
-    console.log(treeMesh);
 
     const instancing = new Instancing({
       object: treeMesh,

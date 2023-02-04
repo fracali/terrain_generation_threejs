@@ -5,9 +5,10 @@ export default class {
   static cameraNear = 0.001;
   static fogNear = 1;
   static fogFar = 1000;
-  static terrainHeightIntensity = 2;
+  static terrainHeightIntensity = 0.3;
   static terrainWidth = 1000;
   static terrainDepth = 1000;
-  static terrainWidthRes = 100;
-  static terrainDepthRes = 100;
+  static terrainWidthRes = 1000;
+  static terrainDepthRes = 1000;
+  static globalSceneExposure = 1.5;
 }

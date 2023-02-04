@@ -34,6 +34,10 @@ export default class Floor {
 
     this.generateTerrain();
 
+    // Update
+    this.mesh.geometry.attributes.position.needsUpdate = true;
+    this.mesh.geometry.computeVertexNormals();
+
     this.container.add(this.mesh);
   }
 

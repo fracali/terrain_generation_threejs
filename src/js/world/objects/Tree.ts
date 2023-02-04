@@ -41,6 +41,7 @@ export default class Tree {
           if ((<Mesh>child).isMesh) {
             const geometry = childMesh.geometry;
             geometry.computeVertexNormals();
+
             geometry.scale(0.5, 0.5, 0.5);
 
             if (childMesh.material && this.material) {
