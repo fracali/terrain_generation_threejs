@@ -35,7 +35,7 @@ export default class {
     const cameraSize = 1000;
 
     dirLight.shadow.camera.far = 2000;
-    dirLight.shadow.camera.near = 100;
+    dirLight.shadow.camera.near = 0;
     dirLight.shadow.camera.left = -cameraSize;
     dirLight.shadow.camera.right = cameraSize;
     dirLight.shadow.camera.top = cameraSize;
@@ -50,7 +50,7 @@ export default class {
       this.container.add(helper);
       const dirLightHelper = new DirectionalLightHelper(dirLight, 10, 0xff0000);
       this.container.add(dirLightHelper);
-      dirLight.target.updateMatrixWorld();
     }
+    dirLight.target.updateMatrixWorld();
   }
 }

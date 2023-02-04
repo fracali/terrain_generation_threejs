@@ -77,7 +77,7 @@ export default class Camera {
     );
 
     this.instance?.position.setY(
-      noiseHeight * Constants.terrainHeightIntensity + 100
+      noiseHeight * Constants.terrainHeightIntensity + 5
     );
   }
 

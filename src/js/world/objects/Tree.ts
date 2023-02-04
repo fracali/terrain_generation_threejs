@@ -1,4 +1,4 @@
-import { Material, Mesh, MeshToonMaterial, TextureLoader } from "three";
+import { Material, Mesh, MeshStandardMaterial, TextureLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 // @ts-ignore
 import treeModel from "../../../assets/resources/pine_tree.fbx?url";
@@ -6,7 +6,7 @@ import treeModel from "../../../assets/resources/pine_tree.fbx?url";
 import treeTexture from "../../../assets/textures/pine_tree.png?url";
 
 export default class Tree {
-  constructor(_options?: any, private material?: MeshToonMaterial) {}
+  constructor(_options?: any, private material?: MeshStandardMaterial) {}
 
   async getMesh(): Promise<Mesh> {
     return await this.loadMaterialThenModel();
@@ -16,7 +16,7 @@ export default class Tree {
     return new Promise((resolve) => {
       const loader = new TextureLoader();
       loader.load(treeTexture, async (texture) => {
-        this.material = new MeshToonMaterial({
+        this.material = new MeshStandardMaterial({
           map: texture,
           transparent: true,
           alphaTest: 0.5,

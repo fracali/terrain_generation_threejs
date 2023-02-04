@@ -1,7 +1,7 @@
 import {
   AxesHelper,
   Color,
-  Fog,
+  FogExp2,
   GridHelper,
   PCFSoftShadowMap,
   ReinhardToneMapping,
@@ -65,11 +65,7 @@ export default class Application {
     this.scene.background = new Color().setHSL(0.6, 0, 1);
 
     // Fog
-    this.scene.fog = new Fog(
-      new Color().setHex(0x3f88c5),
-      Constants.fogNear,
-      Constants.fogFar
-    );
+    this.scene.fog = new FogExp2(0x3f88c5, Constants.fogDensity);
 
     // Renderer
     this.renderer = new WebGLRenderer({

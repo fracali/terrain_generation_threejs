@@ -45,8 +45,8 @@ export default class World {
       instances: 10000,
       noise: this.terrainNoise,
       scene: this.scene,
-      minScale: 0.03,
-      maxScale: 0.08,
+      minScale: 0.006,
+      maxScale: 0.009,
       yRandomRotation: true,
     });
 
@@ -69,8 +69,8 @@ export default class World {
       instances: 1000,
       noise: this.terrainNoise,
       scene: this.scene,
-      minScale: 3,
-      maxScale: 5,
+      minScale: 0.3,
+      maxScale: 0.5,
       xRotationCompensation: -Math.PI / 2,
       zRandomRotation: true,
     });
@@ -86,7 +86,7 @@ export default class World {
 
   setLights() {
     this.container.add(new HemiLight(this.terrainNoise, {}).container);
-    this.container.add(new DirLight({ addHelper: false }).container);
+    this.container.add(new DirLight({}).container);
   }
 
   setFloor() {

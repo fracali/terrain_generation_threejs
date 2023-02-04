@@ -26,6 +26,7 @@ export default class TerrainNoise {
     return data;
   }
 
+  // TODO: interpolare i valori per avere un risultato più fluido
   getNoiseValueAtPosition(noise: Uint8Array, x: number, y: number): number {
     let xAsRes = Math.floor(
       map(x, 0, Constants.terrainWidth, 0, Constants.terrainWidthRes)
