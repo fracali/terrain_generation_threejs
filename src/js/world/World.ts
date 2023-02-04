@@ -4,7 +4,8 @@ import DirLight from "../lights/DirLight";
 import HemiLight from "../lights/HemiLight";
 import Instancing from "../utils/Instancing";
 import Floor from "./Floor";
-import Tree from "./Tree";
+import Tree from "./objects/Tree";
+import TreeTrunk from "./objects/TreeTrunk";
 
 export default class World {
   worldCenterX: number;
@@ -27,24 +28,55 @@ export default class World {
     this.setLights();
     this.setFloor();
     this.addTrees();
+    this.addTreeTrunks();
   }
+
   async addTrees() {
     if (!this.floor) {
       return;
     }
 
     const tree = new Tree();
-    const treeMesh: Mesh = await tree.getTree();
+    const treeMesh: Mesh = await tree.getMesh();
 
     console.log(treeMesh);
 
-    const instancing = new Instancing(
-      treeMesh,
-      this.floor.container,
-      10000,
-      this.terrainNoise,
-      this.scene
-    );
+    const instancing = new Instancing({
+      object: treeMesh,
+      surface: this.floor.container,
+      instances: 10000,
+      noise: this.terrainNoise,
+      scene: this.scene,
+      minScale: 0.03,
+      maxScale: 0.08,
+      yRandomRotation: true,
+    });
+
+    instancing.doInstancing();
+    this.container.updateMatrix();
+  }
+
+  async addTreeTrunks() {
+    if (!this.floor) {
+      return;
+    }
+
+    const trunk = new TreeTrunk();
+    const treeMesh: Mesh = await trunk.getMesh();
+
+    console.log(treeMesh);
+
+    const instancing = new Instancing({
+      object: treeMesh,
+      surface: this.floor.container,
+      instances: 1000,
+      noise: this.terrainNoise,
+      scene: this.scene,
+      minScale: 3,
+      maxScale: 5,
+      xRotationCompensation: -Math.PI / 2,
+      zRandomRotation: true,
+    });
 
     instancing.doInstancing();
     this.container.updateMatrix();
@@ -56,9 +88,7 @@ export default class World {
   }
 
   setLights() {
-    this.container.add(
-      new HemiLight(this.terrainNoise, { addHemiLightHelper: false }).container
-    );
+    this.container.add(new HemiLight(this.terrainNoise, {}).container);
     this.container.add(new DirLight({ addHelper: false }).container);
   }
 

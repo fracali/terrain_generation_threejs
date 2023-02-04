@@ -1,12 +1,35 @@
-import { Material, Mesh, MeshToonMaterial } from "three";
+import { Material, Mesh, MeshToonMaterial, TextureLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 // @ts-ignore
-import treeModel from "../../assets/resources/tree02.fbx?url";
+import treeModel from "../../../assets/resources/pine_tree.fbx?url";
+// @ts-ignore
+import treeTexture from "../../../assets/textures/pine_tree.png?url";
 
-export default class Tree02 {
+export default class Tree {
   constructor(_options?: any, private material?: MeshToonMaterial) {}
 
-  async getTree(): Promise<Mesh> {
+  async getMesh(): Promise<Mesh> {
+    return await this.loadMaterialThenModel();
+  }
+
+  async loadMaterialThenModel(): Promise<Mesh> {
+    return new Promise((resolve) => {
+      const loader = new TextureLoader();
+      loader.load(treeTexture, async (texture) => {
+        this.material = new MeshToonMaterial({
+          map: texture,
+          transparent: true,
+          alphaTest: 0.5,
+        });
+
+        // Carica il modello solo dopo aver caricato il materiale
+        const mesh = await this.loadModel();
+        resolve(mesh);
+      });
+    });
+  }
+
+  async loadModel(): Promise<Mesh> {
     // Promise
     return new Promise((resolve) => {
       const loader = new FBXLoader();

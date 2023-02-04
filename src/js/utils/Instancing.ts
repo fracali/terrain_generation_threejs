@@ -15,17 +15,68 @@ import Constants from "../Constants";
 import TerrainNoise from "../world/TerrainNoise";
 
 export default class {
+  private object: Mesh;
+  private surface: Object3D;
+  private instances: number;
+  private noise: Uint8Array;
+  private scene: Scene;
+  private minScale: number;
+  private maxScale: number;
+  private xRotationCompensation: number;
+  private yRotationCompensation: number;
+  private zRotationCompensation: number;
+  private xRandomRotation?: boolean;
+  private yRandomRotation?: boolean;
+  private zRandomRotation?: boolean;
+
   container: Object3D;
   surfaceSize: Box3;
   terrainNoise: TerrainNoise = new TerrainNoise();
 
-  constructor(
-    private object: Mesh,
-    private surface: Object3D,
-    private instances: number,
-    private noise: Uint8Array,
-    private scene: Scene
-  ) {
+  constructor({
+    object,
+    surface,
+    instances,
+    noise,
+    scene,
+    minScale = 0.5,
+    maxScale = 1,
+    xRotationCompensation = 0,
+    yRotationCompensation = 0,
+    zRotationCompensation = 0,
+    xRandomRotation = false,
+    yRandomRotation = false,
+    zRandomRotation = false,
+  }: {
+    object: Mesh;
+    surface: Object3D;
+    instances: number;
+    noise: Uint8Array;
+    scene: Scene;
+    minScale?: number;
+    maxScale?: number;
+    xRotationCompensation?: number;
+    yRotationCompensation?: number;
+    zRotationCompensation?: number;
+
+    xRandomRotation?: boolean;
+    yRandomRotation?: boolean;
+    zRandomRotation?: boolean;
+  }) {
+    this.object = object;
+    this.surface = surface;
+    this.instances = instances;
+    this.noise = noise;
+    this.scene = scene;
+    this.minScale = minScale;
+    this.maxScale = maxScale;
+    this.xRotationCompensation = xRotationCompensation;
+    this.yRotationCompensation = yRotationCompensation;
+    this.zRotationCompensation = zRotationCompensation;
+    this.xRandomRotation = xRandomRotation;
+    this.yRandomRotation = yRandomRotation;
+    this.zRandomRotation = zRandomRotation;
+
     this.container = new Object3D();
     this.surfaceSize = new Box3().setFromObject(this.surface);
   }
@@ -66,12 +117,10 @@ export default class {
   }
 
   getInstanceScale(): Vector3 {
-    const minScale = 0.05;
-    const maxScale = 0.15;
-
     const scale = new Vector3();
 
-    const randomGlobalScale = Math.random() * (maxScale - minScale) + minScale;
+    const randomGlobalScale =
+      Math.random() * (this.maxScale - this.minScale) + this.minScale;
 
     scale.x = randomGlobalScale;
     scale.y = randomGlobalScale;
@@ -83,7 +132,19 @@ export default class {
   getInstanceRotation(): Euler {
     const rotation = new Euler();
 
-    rotation.y = Math.random() * Math.PI * 2;
+    const xRandomRotation: number = this.xRandomRotation
+      ? Math.random() * Math.PI * 2
+      : 0;
+    const yRandomRotation: number = this.yRandomRotation
+      ? Math.random() * Math.PI * 2
+      : 0;
+    const zRandomRotation: number = this.zRandomRotation
+      ? Math.random() * Math.PI * 2
+      : 0;
+
+    rotation.x = xRandomRotation + this.xRotationCompensation;
+    rotation.y = yRandomRotation + this.yRotationCompensation;
+    rotation.z = zRandomRotation + this.zRotationCompensation;
 
     return rotation;
   }
