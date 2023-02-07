@@ -55,7 +55,6 @@ export default class {
     object: Mesh;
     surface: Object3D;
     instances: number;
-    noise: Uint8Array;
     scene: Scene;
     minScale?: number;
     maxScale?: number;

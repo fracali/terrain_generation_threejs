@@ -6,12 +6,12 @@ import { map } from "../utils/map";
 
 export default class TerrainNoise {
   private static instance: TerrainNoise;
-  private noiseData: Uint8Array;
+  private noiseData: Float32Array;
   private time = new Time();
   private positionOffset = 0;
-  private rng = alea("B");
+  private rng = alea("A");
   private simplexNoise2D = createNoise2D(this.rng);
-  private noise2D = this.fbm2d(this.simplexNoise2D, 2);
+  private noise2D = this.fbm2d(this.simplexNoise2D, 1);
 
   private constructor() {
     this.noiseData = this.generateNoise(
@@ -39,7 +39,7 @@ export default class TerrainNoise {
     };
   }
 
-  public getNoiseData(): Uint8Array {
+  public getNoiseData(): Float32Array {
     return this.noiseData;
   }
 
@@ -53,7 +53,7 @@ export default class TerrainNoise {
 
   private moveNoise() {
     this.time.on("tick", () => {
-      this.positionOffset += 0.5;
+      this.positionOffset += 1; // Deve essere uguale a 1 per avere un movimento fluido
       this.noiseData = this.generateNoise(
         Constants.terrainWidthRes,
         Constants.terrainDepthRes
@@ -61,10 +61,10 @@ export default class TerrainNoise {
     });
   }
 
-  private generateNoise(width: number, height: number): Uint8Array {
+  private generateNoise(width: number, height: number): Float32Array {
     //console.log("Generating noise...");
     const size = width * height;
-    const data = new Uint8Array(size);
+    const data = new Float32Array(size);
 
     let quality = 1;
 

@@ -12,7 +12,6 @@ export default class World {
   worldCenterZ: number;
 
   constructor(
-    private terrainNoise: Uint8Array,
     private scene: Scene,
     public container: Object3D = new Object3D(),
     private axis?: AxesHelper,
@@ -27,7 +26,7 @@ export default class World {
     this.setAxes();
     this.setLights();
     this.setFloor();
-    this.addTreeTrunks();
+    //this.addTreeTrunks();
     this.addTrees();
   }
 
@@ -43,12 +42,11 @@ export default class World {
       object: treeMesh,
       surface: this.floor.container,
       instances: 10000,
-      noise: this.terrainNoise,
       scene: this.scene,
-      minScale: 0.006,
-      maxScale: 0.009,
+      minScale: 0.0005,
+      maxScale: 0.001 ,
       yRandomRotation: true,
-      isDynamic: true,
+      isDynamic: false,
     });
 
     instancing.doInstancing();
@@ -68,7 +66,6 @@ export default class World {
       object: treeMesh,
       surface: this.floor.container,
       instances: 1000,
-      noise: this.terrainNoise,
       scene: this.scene,
       minScale: 0.3,
       maxScale: 0.5,

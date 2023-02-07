@@ -21,7 +21,7 @@ export default class Application {
   constructor(
     _options: any,
     private config: any,
-    private terrainNoise: Uint8Array,
+    private terrainNoise: Float32Array,
     private scene: Scene,
     private renderer: WebGLRenderer,
     private $canvas: any,
@@ -110,7 +110,7 @@ export default class Application {
   }
 
   setWorld() {
-    this.world = new World(this.terrainNoise, this.scene);
+    this.world = new World(this.scene);
     this.scene?.add(this.world.container);
   }
 

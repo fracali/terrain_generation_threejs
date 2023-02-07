@@ -38,8 +38,8 @@ export default class Floor {
     this.time.on("tick", () => {
       this.generateTerrain();
 
-      // Update
       this.mesh!.geometry.attributes.position.needsUpdate = true;
+
       this.mesh!.geometry.computeVertexNormals();
     });
 

@@ -6,7 +6,6 @@ export default function (): MeshStandardMaterial {
     roughness: 0.8,
     metalness: 0.01,
   });
-  material.depthWrite = true;
 
   return material;
 }
