@@ -98,11 +98,10 @@ export default class {
 
     for (let i = 0; i < this.instances; i++) {
       const position = this.getUpdatedPosition(i);
-      const rotation = this.getInstanceRotation();
+      const rotation = this.getInitialRotation();
       const quaternion = new Quaternion();
-      const scale = this.getInstanceScale();
-
       quaternion.setFromEuler(rotation);
+      const scale = this.getInitialScale();
 
       const matrix = new Matrix4();
       matrix.compose(position, quaternion, scale);
@@ -121,15 +120,74 @@ export default class {
     const oldMatrix = new Matrix4();
     this.instancedMesh.getMatrixAt(instanceIndex, oldMatrix);
 
-    const newPosition = new Vector3();
+    let newPosition = new Vector3();
     const oldPosition = new Vector3();
     oldPosition.setFromMatrixPosition(oldMatrix);
 
-    newPosition.x = oldPosition.x + positionOffset * 0.0000001;
-    
-    //console.log("oldPosition", oldPosition);
+    // Se non è uscito dal terreno
+    if (oldPosition.z > 0) {
+      newPosition.x = oldPosition.x;
+      newPosition.z = oldPosition.z - positionOffset * 0.00001 ;
+      newPosition.y =
+        this.terrainNoise.getNoiseValueAtPosition(
+          newPosition.x,
+          newPosition.z
+        ) * Constants.terrainHeightIntensity;
+    }
+    // Quando è uscito dal terreno gli assegna una nuova posizione casuale
+    // ma alla fine del terreno
+    else {
+      newPosition = this.getInitialPosition();
+
+      // Lo mette all'estremità del terreno
+      newPosition.z = Constants.terrainDepth;
+    }
 
     return newPosition;
+  }
+
+  private getUpdatedRotation(instanceIndex: number): Euler {
+    if (!this.instancedMesh) {
+      return new Euler();
+    }
+
+    const oldMatrix = new Matrix4();
+    this.instancedMesh.getMatrixAt(instanceIndex, oldMatrix);
+
+    let newRotation = new Euler();
+    const oldRotation = new Euler();
+    oldRotation.setFromRotationMatrix(oldMatrix);
+
+    // Se non è uscito dal terreno
+    if (oldRotation.z > 0) {
+      newRotation = oldRotation;
+    } else {
+      newRotation = this.getInitialRotation();
+    }
+
+    return newRotation;
+  }
+
+  private getUpdatedScale(instanceIndex: number): Vector3 {
+    if (!this.instancedMesh) {
+      return new Vector3();
+    }
+
+    const oldMatrix = new Matrix4();
+    this.instancedMesh.getMatrixAt(instanceIndex, oldMatrix);
+
+    let newScale = new Vector3();
+    const oldScale = new Vector3();
+    oldScale.setFromMatrixScale(oldMatrix);
+
+    // Se non è uscito dal terreno
+    if (oldScale.z > 0) {
+      newScale = oldScale;
+    } else {
+      newScale = this.getInitialScale();
+    }
+
+    return newScale;
   }
 
   doInstancing() {
@@ -150,9 +208,9 @@ export default class {
 
     for (let i = 0; i < this.instances; i++) {
       const position = this.getInitialPosition();
-      const rotation = this.getInstanceRotation();
+      const rotation = this.getInitialRotation();
       const quaternion = new Quaternion();
-      const scale = this.getInstanceScale();
+      const scale = this.getInitialScale();
 
       quaternion.setFromEuler(rotation);
 
@@ -168,7 +226,7 @@ export default class {
     this.scene.add(this.instancedMesh);
   }
 
-  getInstanceScale(): Vector3 {
+  getInitialScale(): Vector3 {
     const scale = new Vector3();
 
     const randomGlobalScale =
@@ -181,7 +239,7 @@ export default class {
     return scale;
   }
 
-  getInstanceRotation(): Euler {
+  getInitialRotation(): Euler {
     const rotation = new Euler();
 
     const xRandomRotation: number = this.xRandomRotation

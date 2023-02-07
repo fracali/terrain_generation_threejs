@@ -27,7 +27,7 @@ export default class World {
     this.setLights();
     this.setFloor();
     //this.addTreeTrunks();
-    this.addTrees();
+    //this.addTrees();
   }
 
   async addTrees() {
@@ -44,9 +44,9 @@ export default class World {
       instances: 10000,
       scene: this.scene,
       minScale: 0.0005,
-      maxScale: 0.001 ,
+      maxScale: 0.001,
       yRandomRotation: true,
-      isDynamic: false,
+      isDynamic: true,
     });
 
     instancing.doInstancing();
