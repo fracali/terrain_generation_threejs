@@ -11,4 +11,5 @@ export default class {
   static terrainWidthRes = 200;
   static terrainDepthRes = 200;
   static globalSceneExposure = 1.5;
+  static noiseScale = 0.15
 }

@@ -13,12 +13,12 @@ import {
 } from "three";
 import Constants from "../Constants";
 import TerrainNoise from "../world/TerrainNoise";
+import Time from "./Time";
 
 export default class {
   private object: Mesh;
   private surface: Object3D;
   private instances: number;
-  private noise: Uint8Array;
   private scene: Scene;
   private minScale: number;
   private maxScale: number;
@@ -28,16 +28,19 @@ export default class {
   private xRandomRotation?: boolean;
   private yRandomRotation?: boolean;
   private zRandomRotation?: boolean;
+  private isDynamic: boolean = false;
+  private time = new Time();
+
+  private instancedMesh?: InstancedMesh;
 
   container: Object3D;
   surfaceSize: Box3;
-  terrainNoise: TerrainNoise = new TerrainNoise();
+  terrainNoise: TerrainNoise = TerrainNoise.getInstance();
 
   constructor({
     object,
     surface,
     instances,
-    noise,
     scene,
     minScale = 0.5,
     maxScale = 1,
@@ -47,6 +50,7 @@ export default class {
     xRandomRotation = false,
     yRandomRotation = false,
     zRandomRotation = false,
+    isDynamic = false,
   }: {
     object: Mesh;
     surface: Object3D;
@@ -58,15 +62,14 @@ export default class {
     xRotationCompensation?: number;
     yRotationCompensation?: number;
     zRotationCompensation?: number;
-
     xRandomRotation?: boolean;
     yRandomRotation?: boolean;
     zRandomRotation?: boolean;
+    isDynamic?: boolean;
   }) {
     this.object = object;
     this.surface = surface;
     this.instances = instances;
-    this.noise = noise;
     this.scene = scene;
     this.minScale = minScale;
     this.maxScale = maxScale;
@@ -76,20 +79,70 @@ export default class {
     this.xRandomRotation = xRandomRotation;
     this.yRandomRotation = yRandomRotation;
     this.zRandomRotation = zRandomRotation;
-
     this.container = new Object3D();
     this.surfaceSize = new Box3().setFromObject(this.surface);
+    this.isDynamic = isDynamic;
+
+    if (this.isDynamic) {
+      this.time.on("tick", () => {
+        this.updateInstances();
+      });
+    }
+  }
+
+  updateInstances() {
+    // @ts-ignore
+    if (!this.instancedMesh) {
+      console.log("no mesh");
+      return;
+    }
+
+    for (let i = 0; i < this.instances; i++) {
+      const position = this.getUpdatedPosition(i);
+      const rotation = this.getInstanceRotation();
+      const quaternion = new Quaternion();
+      const scale = this.getInstanceScale();
+
+      quaternion.setFromEuler(rotation);
+
+      const matrix = new Matrix4();
+      matrix.compose(position, quaternion, scale);
+      this.instancedMesh.setMatrixAt(i, matrix);
+    }
+    this.instancedMesh.instanceMatrix.needsUpdate = true;
+  }
+
+  private getUpdatedPosition(instanceIndex: number): Vector3 {
+    if (!this.instancedMesh) {
+      return new Vector3();
+    }
+
+    const positionOffset = TerrainNoise.getInstance().getOffset();
+
+    const oldMatrix = new Matrix4();
+    this.instancedMesh.getMatrixAt(instanceIndex, oldMatrix);
+
+    const newPosition = new Vector3();
+    const oldPosition = new Vector3();
+    oldPosition.setFromMatrixPosition(oldMatrix);
+
+    newPosition.x = oldPosition.x + positionOffset * 0.0000001;
+    
+    //console.log("oldPosition", oldPosition);
+
+    return newPosition;
   }
 
   doInstancing() {
+    console.log("Instancing init");
     let geometry: BufferGeometry = // @ts-ignore
       this.object.children[0].geometry as BufferGeometry;
 
     // @ts-ignore
     const material = this.object.children[0].material;
 
-    let mesh = new InstancedMesh(geometry, material, this.instances);
-    mesh.instanceMatrix.setUsage(DynamicDrawUsage);
+    this.instancedMesh = new InstancedMesh(geometry, material, this.instances);
+    this.instancedMesh.instanceMatrix.setUsage(DynamicDrawUsage);
 
     const matrix = new Matrix4();
     if (this.surface === undefined) {
@@ -97,7 +150,7 @@ export default class {
     }
 
     for (let i = 0; i < this.instances; i++) {
-      const position = this.getInstancePosition();
+      const position = this.getInitialPosition();
       const rotation = this.getInstanceRotation();
       const quaternion = new Quaternion();
       const scale = this.getInstanceScale();
@@ -105,15 +158,15 @@ export default class {
       quaternion.setFromEuler(rotation);
 
       matrix.compose(position, quaternion, scale);
-      mesh.setMatrixAt(i, matrix);
+      this.instancedMesh.setMatrixAt(i, matrix);
     }
-    mesh.updateMatrixWorld();
+    this.instancedMesh.updateMatrixWorld();
 
     // Shadows
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    this.instancedMesh.castShadow = true;
+    this.instancedMesh.receiveShadow = true;
 
-    this.scene.add(mesh);
+    this.scene.add(this.instancedMesh);
   }
 
   getInstanceScale(): Vector3 {
@@ -149,7 +202,7 @@ export default class {
     return rotation;
   }
 
-  getInstancePosition(): Vector3 {
+  getInitialPosition(): Vector3 {
     const position = new Vector3();
 
     const surfaceWidth = this.surfaceSize.max.x;
@@ -160,7 +213,7 @@ export default class {
 
     position.x = x;
     position.y =
-      this.terrainNoise.getNoiseValueAtPosition(this.noise, x, z) *
+      this.terrainNoise.getNoiseValueAtPosition(x, z) *
       Constants.terrainHeightIntensity;
     position.z = z;
 

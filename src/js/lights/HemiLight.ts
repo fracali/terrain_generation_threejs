@@ -6,18 +6,14 @@ export default class {
   container: Object3D;
   private addHemiLightHelper: boolean;
 
-  constructor(
-    private terrainNoise: Uint8Array,
-    { addHemiLightHelper = false }
-  ) {
+  constructor({ addHemiLightHelper = false }) {
     this.addHemiLightHelper = addHemiLightHelper;
     this.container = new Object3D();
 
     const worldCenterX = Constants.terrainWidth / 2;
     const worldCenterZ = Constants.terrainDepth / 2;
-    const noiseInstance = new TerrainNoise();
+    const noiseInstance = TerrainNoise.getInstance();
     const noiseHeight = noiseInstance.getNoiseValueAtPosition(
-      this.terrainNoise,
       worldCenterX,
       worldCenterZ
     );

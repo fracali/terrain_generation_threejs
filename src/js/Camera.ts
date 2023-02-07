@@ -8,7 +8,6 @@ export default class Camera {
   private worldCenterZ: number;
 
   constructor(
-    private terrainNoise: Uint8Array,
     private time: any,
     private sizes: any,
     private renderer: any,
@@ -69,9 +68,8 @@ export default class Camera {
     let cameraPosition = this.instance?.position;
     if (!cameraPosition) return;
 
-    const noiseInstance = new TerrainNoise();
+    const noiseInstance = TerrainNoise.getInstance();
     const noiseHeight = noiseInstance.getNoiseValueAtPosition(
-      this.terrainNoise,
       cameraPosition.x,
       cameraPosition.z
     );

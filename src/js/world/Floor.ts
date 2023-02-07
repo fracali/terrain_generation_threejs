@@ -1,10 +1,13 @@
 import { Mesh, MeshStandardMaterial, Object3D, PlaneGeometry } from "three";
 import Constants from "../Constants";
 import FloorMaterial from "../materials/terrain_mat";
+import Time from "../utils/Time";
+import TerrainNoise from "./TerrainNoise";
 
 export default class Floor {
+  private time = new Time();
+
   constructor(
-    private terrainNoise: Uint8Array,
     public container: Object3D = new Object3D(),
     private worldWidthRes: number = Constants.terrainWidthRes,
     private worldDepthRes: number = Constants.terrainDepthRes,
@@ -32,23 +35,27 @@ export default class Floor {
     this.mesh.receiveShadow = true;
     this.mesh.castShadow = true;
 
-    this.generateTerrain();
+    this.time.on("tick", () => {
+      this.generateTerrain();
 
-    // Update
-    this.mesh.geometry.attributes.position.needsUpdate = true;
-    this.mesh.geometry.computeVertexNormals();
+      // Update
+      this.mesh!.geometry.attributes.position.needsUpdate = true;
+      this.mesh!.geometry.computeVertexNormals();
+    });
 
     this.container.add(this.mesh);
   }
 
   generateTerrain() {
+    const noiseInstance = TerrainNoise.getInstance();
+
     // @ts-ignore
     const vertices = this.geometry.attributes.position.array;
     for (let i = 0, l = vertices.length; i < l; i++) {
       // @ts-ignore
       this.geometry.attributes.position.setY(
         i,
-        this.terrainNoise[i] * this.heightIntensity
+        noiseInstance.getNoiseData()[i] * this.heightIntensity
       );
     }
   }

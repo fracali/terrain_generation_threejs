@@ -18,7 +18,7 @@ import HemiLight from "../lights/HemiLight";
 export default class {
   container: Object3D;
 
-  constructor(private scene: Scene, private terrainNoise: Uint8Array) {
+  constructor(private scene: Scene) {
     this.container = new Object3D();
     if (!this.scene) return;
     if (!this.scene.fog) return;
@@ -33,7 +33,7 @@ export default class {
     };
 
     // Copia di hemiLight in world/index.js
-    const hemiLight = new HemiLight(this.terrainNoise, {}).container
+    const hemiLight = new HemiLight({}).container
       .children[0] as HemisphereLight;
     hemiLight.color.setHSL(0.6, 1, 0.6);
     hemiLight.groundColor.setHSL(0.095, 1, 0.75);

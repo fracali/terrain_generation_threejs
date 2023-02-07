@@ -27,8 +27,8 @@ export default class World {
     this.setAxes();
     this.setLights();
     this.setFloor();
-    this.addTrees();
     this.addTreeTrunks();
+    this.addTrees();
   }
 
   async addTrees() {
@@ -48,6 +48,7 @@ export default class World {
       minScale: 0.006,
       maxScale: 0.009,
       yRandomRotation: true,
+      isDynamic: true,
     });
 
     instancing.doInstancing();
@@ -85,12 +86,12 @@ export default class World {
   }
 
   setLights() {
-    this.container.add(new HemiLight(this.terrainNoise, {}).container);
+    this.container.add(new HemiLight({}).container);
     this.container.add(new DirLight({}).container);
   }
 
   setFloor() {
-    this.floor = new Floor(this.terrainNoise);
+    this.floor = new Floor();
     this.container.add(this.floor.container);
   }
 }

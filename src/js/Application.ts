@@ -16,7 +16,6 @@ import World from "./world/World";
 
 import Constants from "./Constants";
 import Sky from "./world/Sky";
-import Noise from "./world/TerrainNoise";
 
 export default class Application {
   constructor(
@@ -30,12 +29,10 @@ export default class Application {
     private sizes = new Sizes(),
     private fpsCounter: FPSCounter,
     private camera: Camera,
-    private world: World,
-    private noiseInstance: Noise = new Noise() // TODO: private resources = new Resources();
+    private world: World // TODO: private resources = new Resources();
   ) {
     this.$canvas = _options.$canvas;
 
-    this.setNoise();
     this.setConfig();
     this.setRenderer();
     this.setFPSCounter();
@@ -48,13 +45,6 @@ export default class Application {
   setConfig() {
     this.config = {};
     this.config.debug = false;
-  }
-
-  setNoise() {
-    this.terrainNoise = this.noiseInstance.getNoise(
-      Constants.terrainWidthRes,
-      Constants.terrainDepthRes
-    );
   }
 
   setRenderer() {
@@ -108,13 +98,7 @@ export default class Application {
   }
 
   setCamera() {
-    this.camera = new Camera(
-      this.terrainNoise,
-      this.time,
-      this.sizes,
-      this.renderer,
-      this.config
-    );
+    this.camera = new Camera(this.time, this.sizes, this.renderer, this.config);
   }
 
   setHelpers() {
@@ -134,7 +118,7 @@ export default class Application {
     if (!this.scene) return;
     if (!this.scene.fog) return;
 
-    this.scene.add(new Sky(this.scene, this.terrainNoise).container);
+    this.scene.add(new Sky(this.scene).container);
   }
 
   setFPSCounter() {
