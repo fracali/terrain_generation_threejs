@@ -8,8 +8,8 @@ export default class {
   static terrainHeightIntensity = 0.01;
   static terrainWidth = 10;
   static terrainDepth = 10;
-  static terrainWidthRes = 120;
-  static terrainDepthRes = 120;
+  static terrainWidthRes = 100;
+  static terrainDepthRes = 100;
   static globalSceneExposure = 1.5;
-  static noiseScale = 0.15;
+  static noiseSpeed = 0.5;
 }

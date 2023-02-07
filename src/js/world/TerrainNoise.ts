@@ -11,7 +11,7 @@ export default class TerrainNoise {
   private positionOffset = 0;
   private rng = alea("A");
   private simplexNoise2D = createNoise2D(this.rng);
-  private noise2D = this.fbm2d(this.simplexNoise2D, 1);
+  private noise2D = this.fbm2d(this.simplexNoise2D);
 
   private constructor() {
     this.noiseData = this.generateNoise(
@@ -25,17 +25,9 @@ export default class TerrainNoise {
     return this.positionOffset;
   }
 
-  private fbm2d(noise2D: NoiseFunction2D, octaves: number): NoiseFunction2D {
+  private fbm2d(noise2D: NoiseFunction2D): NoiseFunction2D {
     return function fbm2dFn(x: number, y: number) {
-      let value = 0.0;
-      let amplitude = 0.5;
-      for (let i = 0; i < octaves; i++) {
-        value += noise2D(x, y) * amplitude;
-        x *= 0.5;
-        y *= 0.5;
-        amplitude *= 0.8;
-      }
-      return value;
+      return noise2D(x, y);
     };
   }
 
@@ -53,7 +45,7 @@ export default class TerrainNoise {
 
   private moveNoise() {
     this.time.on("tick", () => {
-      this.positionOffset += 1; // Deve essere uguale a 1 per avere un movimento fluido
+      this.positionOffset += Constants.noiseSpeed; // Deve essere uguale a 1 per avere un movimento fluido
       this.noiseData = this.generateNoise(
         Constants.terrainWidthRes,
         Constants.terrainDepthRes
@@ -62,7 +54,6 @@ export default class TerrainNoise {
   }
 
   private generateNoise(width: number, height: number): Float32Array {
-    //console.log("Generating noise...");
     const size = width * height;
     const data = new Float32Array(size);
 
@@ -70,8 +61,8 @@ export default class TerrainNoise {
 
     for (let j = 0; j < 4; j++) {
       for (let i = 0; i < size; i++) {
-        const x = i % width,
-          y = ~~(i / width) + this.positionOffset;
+        const x = i % width;
+        const y = ~~(i / width) + this.positionOffset;
         data[i] += Math.abs(
           this.noise2D(x / quality, y / quality) * quality * 1.75
         );

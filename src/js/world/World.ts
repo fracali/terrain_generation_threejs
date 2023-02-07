@@ -27,7 +27,7 @@ export default class World {
     this.setLights();
     this.setFloor();
     //this.addTreeTrunks();
-    //this.addTrees();
+    this.addTrees();
   }
 
   async addTrees() {
@@ -41,7 +41,7 @@ export default class World {
     const instancing = new Instancing({
       object: treeMesh,
       surface: this.floor.container,
-      instances: 10000,
+      instances: 1000,
       scene: this.scene,
       minScale: 0.0005,
       maxScale: 0.001,

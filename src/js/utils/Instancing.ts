@@ -32,6 +32,8 @@ export default class {
   private time = new Time();
 
   private instancedMesh?: InstancedMesh;
+  private instancePositionOffset =
+    Constants.noiseSpeed * (Constants.terrainDepth / Constants.terrainDepthRes);
 
   container: Object3D;
   surfaceSize: Box3;
@@ -89,19 +91,17 @@ export default class {
     }
   }
 
-  updateInstances() {
-    // @ts-ignore
+  private updateInstances() {
     if (!this.instancedMesh) {
-      console.log("no mesh");
       return;
     }
 
     for (let i = 0; i < this.instances; i++) {
       const position = this.getUpdatedPosition(i);
-      const rotation = this.getInitialRotation();
+      const rotation = this.getUpdatedRotation(i);
       const quaternion = new Quaternion();
       quaternion.setFromEuler(rotation);
-      const scale = this.getInitialScale();
+      const scale = this.getUpdatedScale(i);
 
       const matrix = new Matrix4();
       matrix.compose(position, quaternion, scale);
@@ -115,34 +115,28 @@ export default class {
       return new Vector3();
     }
 
-    const positionOffset = TerrainNoise.getInstance().getOffset();
-
     const oldMatrix = new Matrix4();
     this.instancedMesh.getMatrixAt(instanceIndex, oldMatrix);
 
-    let newPosition = new Vector3();
     const oldPosition = new Vector3();
     oldPosition.setFromMatrixPosition(oldMatrix);
 
-    // Se non è uscito dal terreno
-    if (oldPosition.z > 0) {
-      newPosition.x = oldPosition.x;
-      newPosition.z = oldPosition.z - positionOffset * 0.00001 ;
-      newPosition.y =
-        this.terrainNoise.getNoiseValueAtPosition(
-          newPosition.x,
-          newPosition.z
-        ) * Constants.terrainHeightIntensity;
-    }
+    const newX = oldPosition.x;
+    const newZ = oldPosition.z - this.instancePositionOffset; // (0.003); // Deve avere lo stesso rapporto tra il numero di segmenti e la profondità del terreno
+    const newY =
+      this.terrainNoise.getNoiseValueAtPosition(newX, newZ) *
+      Constants.terrainHeightIntensity;
+
+    let newPosition = new Vector3(newX, newY, newZ);
+
     // Quando è uscito dal terreno gli assegna una nuova posizione casuale
     // ma alla fine del terreno
-    else {
+    if (oldPosition.z < 0) {
       newPosition = this.getInitialPosition();
 
       // Lo mette all'estremità del terreno
       newPosition.z = Constants.terrainDepth;
     }
-
     return newPosition;
   }
 
@@ -158,12 +152,7 @@ export default class {
     const oldRotation = new Euler();
     oldRotation.setFromRotationMatrix(oldMatrix);
 
-    // Se non è uscito dal terreno
-    if (oldRotation.z > 0) {
-      newRotation = oldRotation;
-    } else {
-      newRotation = this.getInitialRotation();
-    }
+    newRotation = oldRotation;
 
     return newRotation;
   }
