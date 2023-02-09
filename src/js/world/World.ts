@@ -78,7 +78,8 @@ export default class World {
   }
 
   setAxes() {
-    this.axis = new AxesHelper(1000);
+    console.log("setAxes"); 
+    this.axis = new AxesHelper(10);
     this.container.add(this.axis);
   }
 

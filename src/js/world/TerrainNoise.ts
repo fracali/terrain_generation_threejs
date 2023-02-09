@@ -75,7 +75,25 @@ export default class TerrainNoise {
   }
 
   // TODO: interpolare i valori per avere un risultato più fluido
-  getNoiseValueAtPosition(x: number, y: number): number {
+  // getNoiseValueAtPosition(x: number, y: number): number {
+  //   let xAsRes = Math.floor(
+  //     map(x, 0, Constants.terrainWidth, 0, Constants.terrainWidthRes)
+  //   );
+  //   let yAsRes = Math.floor(
+  //     map(y, 0, Constants.terrainDepth, 0, Constants.terrainDepthRes)
+  //   );
+
+  //   const index = xAsRes + yAsRes * Constants.terrainWidthRes;
+
+  //   // Per i valori vicini alla fine del terreno
+  //   if (index > this.noiseData.length - 1) {
+  //     return -100;
+  //   }
+
+  //   return this.noiseData[index];
+  // }
+
+  public getNoiseValueAtPosition(x: number, y: number): number {
     let xAsRes = Math.floor(
       map(x, 0, Constants.terrainWidth, 0, Constants.terrainWidthRes)
     );
@@ -83,13 +101,59 @@ export default class TerrainNoise {
       map(y, 0, Constants.terrainDepth, 0, Constants.terrainDepthRes)
     );
 
-    const index = xAsRes + yAsRes * Constants.terrainWidthRes;
+
+    // Se sta esattamente su un vertice
+    return this.getAverageHeight(x, y, xAsRes, yAsRes);
+  }
+
+  private getHeightAtCell(cellX: number, cellY: number): number {
+    const roundedIndex = cellX + cellY * Constants.terrainWidthRes;
 
     // Per i valori vicini alla fine del terreno
-    if (index > this.noiseData.length - 1) {
+    if (roundedIndex > this.noiseData.length - 1) {
       return -100;
     }
 
-    return this.noiseData[index];
+    return this.noiseData[roundedIndex];
+  }
+
+  // TODO: blocca il render
+  private getAverageHeight(
+    x: number,
+    y: number,
+    cellX: number,
+    cellY: number
+  ): number {
+    const cellSize = Constants.terrainWidth / Constants.terrainWidthRes;
+    const xOnCell = x % cellSize;
+    const yOnCell = y % cellSize;
+
+    const topLeftH = this.getHeightAtCell(cellX, cellY);
+    const topRightH = this.getHeightAtCell(cellX + cellSize, cellY);
+    const bottomLeftH = this.getHeightAtCell(cellX, cellY + cellSize);
+    const bottomRightH = this.getHeightAtCell(
+      cellX + cellSize,
+      cellY + cellSize
+    );
+
+    const avgHeightLeft = this.lerp(topLeftH, bottomLeftH, yOnCell);
+    const avgHeightRight = this.lerp(topRightH, bottomRightH, yOnCell);
+    const avgHeightTop = this.lerp(topLeftH, topRightH, xOnCell);
+    const avgHeightBottom = this.lerp(bottomLeftH, bottomRightH, xOnCell);
+
+    const avgHeightHorizontal = this.lerp(
+      avgHeightLeft,
+      avgHeightRight,
+      xOnCell
+    );
+    const avgHeightVertical = this.lerp(avgHeightTop, avgHeightBottom, yOnCell);
+
+    const avgHeight = this.lerp(avgHeightHorizontal, avgHeightVertical, 0.5);
+
+    return avgHeight;
+  }
+
+  private lerp(start: number, end: number, amt: number): number {
+    return (1 - amt) * start + amt * end;
   }
 }

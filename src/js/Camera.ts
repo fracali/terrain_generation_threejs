@@ -8,7 +8,6 @@ export default class Camera {
   private worldCenterZ: number;
 
   constructor(
-    private time: any,
     private sizes: any,
     private renderer: any,
     private config: any,
@@ -28,6 +27,7 @@ export default class Camera {
   }
 
   setInstance() {
+    console.log("Camera.setInstance");
     // Set up
     this.instance = new PerspectiveCamera(
       Constants.cameraFov,

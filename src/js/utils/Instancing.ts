@@ -122,7 +122,7 @@ export default class {
     oldPosition.setFromMatrixPosition(oldMatrix);
 
     const newX = oldPosition.x;
-    const newZ = oldPosition.z - this.instancePositionOffset; // (0.003); // Deve avere lo stesso rapporto tra il numero di segmenti e la profondità del terreno
+    const newZ = oldPosition.z - this.instancePositionOffset; // Deve avere lo stesso rapporto tra il numero di segmenti e la profondità del terreno
     const newY =
       this.terrainNoise.getNoiseValueAtPosition(newX, newZ) *
       Constants.terrainHeightIntensity;
@@ -180,7 +180,6 @@ export default class {
   }
 
   doInstancing() {
-    console.log("Instancing init");
     let geometry: BufferGeometry = // @ts-ignore
       this.object.children[0].geometry as BufferGeometry;
 
@@ -259,8 +258,7 @@ export default class {
 
     position.x = x;
     position.y =
-      this.terrainNoise.getNoiseValueAtPosition(x, z) *
-      Constants.terrainHeightIntensity;
+      this.terrainNoise.getNoiseValueAtPosition(x, z) * Constants.terrainHeightIntensity;
     position.z = z;
 
     return position;

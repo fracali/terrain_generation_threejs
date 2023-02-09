@@ -1,8 +1,6 @@
 import {
-  AxesHelper,
   Color,
   FogExp2,
-  GridHelper,
   PCFSoftShadowMap,
   ReinhardToneMapping,
   Scene,
@@ -21,7 +19,6 @@ export default class Application {
   constructor(
     _options: any,
     private config: any,
-    private terrainNoise: Float32Array,
     private scene: Scene,
     private renderer: WebGLRenderer,
     private $canvas: any,
@@ -39,7 +36,6 @@ export default class Application {
     this.setCamera();
     this.setWorld();
     this.setSky();
-    //this.setHelpers();
   }
 
   setConfig() {
@@ -98,15 +94,7 @@ export default class Application {
   }
 
   setCamera() {
-    this.camera = new Camera(this.time, this.sizes, this.renderer, this.config);
-  }
-
-  setHelpers() {
-    let axesHelper = new AxesHelper(5);
-    this.scene?.add(axesHelper);
-
-    let gridHelper = new GridHelper(10, 10);
-    this.scene?.add(gridHelper);
+    this.camera = new Camera(this.sizes, this.renderer, this.config);
   }
 
   setWorld() {

@@ -11,5 +11,5 @@ export default class {
   static terrainWidthRes = 100;
   static terrainDepthRes = 100;
   static globalSceneExposure = 1.5;
-  static noiseSpeed = 0.5;
+  static noiseSpeed = 0.5; // Deve essere uguale a 1 per avere un movimento fluido
 }
