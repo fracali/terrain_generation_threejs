@@ -7,6 +7,9 @@ export default class Camera {
   private worldCenterX: number;
   private worldCenterZ: number;
 
+  private distanceFromGround = 0.8;
+  private heightAdjustSpeed = 0.03;
+
   constructor(
     private time: any,
     private sizes: any,
@@ -20,11 +23,14 @@ export default class Camera {
     this.worldCenterZ = Constants.terrainDepth / 2;
 
     this.setInstance();
-    // Se ci sono gli orbit controls viene sovrascritto il lookAt
-    //this.setLookAt(this.worldCenterX, 220, this.worldCenterZ);
-    this.moveToRandomPosition();
+    //this.moveToRandomPosition();
+    this.moveToWorldEdge();
     this.setHeight();
     this.setOrbitControls();
+
+    this.time.on("tick", () => {
+      this.updateHeight();
+    });
   }
 
   setInstance() {
@@ -48,6 +54,12 @@ export default class Camera {
     });
   }
 
+  moveToWorldEdge() {
+    if (!this.instance) return;
+
+    this.instance.position.set(5, 0, 0);
+  }
+
   moveToRandomPosition() {
     if (!this.instance) return;
 
@@ -64,6 +76,30 @@ export default class Camera {
     this.instance.updateProjectionMatrix();
   }
 
+  updateHeight() {
+    let cameraPosition = this.instance?.position;
+    if (!cameraPosition) return;
+
+    const oldHeight = cameraPosition.y;
+    const noiseInstance = TerrainNoise.getInstance();
+    const futureNoiseHeight =
+      noiseInstance.getNoiseValueAtPosition(
+        cameraPosition.x,
+        cameraPosition.z + 2
+      ) *
+        Constants.terrainHeightIntensity +
+      this.distanceFromGround;
+
+    const heightDifference = futureNoiseHeight - oldHeight;
+
+    const newHeight = oldHeight + heightDifference * this.heightAdjustSpeed;
+
+    // La sposta solo se la differenza è maggiore di 0.1
+    if (Math.abs(heightDifference) > 0.2) {
+      this.instance?.position.setY(newHeight);
+    }
+  }
+
   setHeight() {
     let cameraPosition = this.instance?.position;
     if (!cameraPosition) return;
@@ -75,7 +111,7 @@ export default class Camera {
     );
 
     this.instance?.position.setY(
-      noiseHeight * Constants.terrainHeightIntensity + 1
+      noiseHeight * Constants.terrainHeightIntensity + this.distanceFromGround
     );
   }
 
@@ -85,7 +121,7 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
-    this.orbitControls.target.set(this.worldCenterX, 0, this.worldCenterZ);
+    this.orbitControls.target.set(this.worldCenterX, 1, this.worldCenterZ);
     this.orbitControls.update();
   }
 }
