@@ -5,6 +5,7 @@ import {
   Object3D,
 } from "three";
 import Constants from "../Constants";
+import { map } from "../utils/map";
 
 export default class {
   container: Object3D;
@@ -21,20 +22,20 @@ export default class {
     const lightTarget = new Object3D();
     lightTarget.position.set(this.worldCenterX, 0, this.worldCenterZ);
 
-    const dirLightHeight = Constants.terrainDepth * 0.5;
-
     const dirLight = new DirectionalLight(0xffffff, 1);
     dirLight.color.setHSL(0.1, 1, 0.95);
-    dirLight.position.set(-1, dirLightHeight, 1);
+    //dirLight.position.set(-1, dirLightHeight, 1);
+
+    this.setRandomPosition(dirLight);
 
     // Qualità ombre
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 1024 * 4;
     dirLight.shadow.mapSize.height = 1024 * 4;
 
-    const cameraSize = 1000;
+    const cameraSize = 10;
 
-    dirLight.shadow.camera.far = 2000;
+    dirLight.shadow.camera.far = 50;
     dirLight.shadow.camera.near = 0;
     dirLight.shadow.camera.left = -cameraSize;
     dirLight.shadow.camera.right = cameraSize;
@@ -52,5 +53,18 @@ export default class {
       this.container.add(dirLightHelper);
     }
     dirLight.target.updateMatrixWorld();
+  }
+
+  setRandomPosition(light: DirectionalLight) {
+    const dirLightHeight = map(Math.random(), 0, 1, 2, 7);
+    const worldCenterX = Constants.terrainWidth / 2;
+    const worldCenterZ = Constants.terrainDepth / 2;
+
+    const lightX = map(Math.random(), 0, 1, -5, 5) + worldCenterX;
+    const lightZ = map(Math.random(), 0, 1, -5, 5) + worldCenterZ;
+
+    console.log(dirLightHeight);
+
+    light.position.set(lightX, dirLightHeight, lightZ);
   }
 }

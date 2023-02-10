@@ -177,7 +177,6 @@ export default class {
   }
 
   doInstancing() {
-    console.log("Instancing init");
     let geometry: BufferGeometry = // @ts-ignore
       this.object.children[0].geometry as BufferGeometry;
 
