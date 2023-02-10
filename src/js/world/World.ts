@@ -44,7 +44,7 @@ export default class World {
       instances: 3000,
       scene: this.scene,
       minScale: 0.0005,
-      maxScale: 0.001,
+      maxScale: 0.0012,
       yRandomRotation: true,
       isDynamic: true,
     });

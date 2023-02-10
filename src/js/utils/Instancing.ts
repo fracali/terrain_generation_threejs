@@ -110,6 +110,8 @@ export default class {
     this.instancedMesh.instanceMatrix.needsUpdate = true;
   }
 
+  lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
+
   private getUpdatedPosition(instanceIndex: number): Vector3 {
     if (!this.instancedMesh) {
       return new Vector3();
@@ -122,20 +124,15 @@ export default class {
     oldPosition.setFromMatrixPosition(oldMatrix);
 
     const newX = oldPosition.x;
-    const newZ = oldPosition.z - this.instancePositionOffset; // (0.003); // Deve avere lo stesso rapporto tra il numero di segmenti e la profondità del terreno
-    const newY =
-      this.terrainNoise.getNoiseValueAtPosition(newX, newZ) *
-      Constants.terrainHeightIntensity;
+    const newZ = oldPosition.z - this.instancePositionOffset;
+    const newY = oldPosition.y;
 
     let newPosition = new Vector3(newX, newY, newZ);
 
     // Quando è uscito dal terreno gli assegna una nuova posizione casuale
     // ma alla fine del terreno
     if (oldPosition.z < 0) {
-      newPosition = this.getInitialPosition();
-
-      // Lo mette all'estremità del terreno
-      newPosition.z = Constants.terrainDepth;
+      newPosition = this.getInitialPosition(true);
     }
     return newPosition;
   }
@@ -209,8 +206,8 @@ export default class {
     this.instancedMesh.updateMatrixWorld();
 
     // Shadows
-    this.instancedMesh.castShadow = true;
-    this.instancedMesh.receiveShadow = true;
+    this.instancedMesh.castShadow = false;
+    this.instancedMesh.receiveShadow = false;
 
     this.scene.add(this.instancedMesh);
   }
@@ -248,14 +245,20 @@ export default class {
     return rotation;
   }
 
-  getInitialPosition(): Vector3 {
+  getInitialPosition(placeAtWorldOrigin: boolean = false): Vector3 {
     const position = new Vector3();
 
     const surfaceWidth = this.surfaceSize.max.x;
     const surfaceDepth = this.surfaceSize.max.z;
 
     const x = Math.random() * surfaceWidth;
-    const z = Math.random() * surfaceDepth;
+    let z =
+      Constants.terrainDepth -
+      Constants.terrainDepth / Constants.terrainDepthRes;
+
+    if (!placeAtWorldOrigin) {
+      z = Math.random() * surfaceDepth;
+    }
 
     position.x = x;
     position.y =

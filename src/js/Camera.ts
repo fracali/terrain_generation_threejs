@@ -8,7 +8,7 @@ export default class Camera {
   private worldCenterZ: number;
 
   private distanceFromGround = 0.8;
-  private heightAdjustSpeed = 0.03;
+  private heightAdjustSpeed = 0.01;
 
   constructor(
     private time: any,
@@ -94,10 +94,7 @@ export default class Camera {
 
     const newHeight = oldHeight + heightDifference * this.heightAdjustSpeed;
 
-    // La sposta solo se la differenza è maggiore di 0.1
-    if (Math.abs(heightDifference) > 0.2) {
-      this.instance?.position.setY(newHeight);
-    }
+    this.instance?.position.setY(newHeight);
   }
 
   setHeight() {
