@@ -21,7 +21,6 @@ export default class Application {
   constructor(
     _options: any,
     private config: any,
-    private terrainNoise: Float32Array,
     private scene: Scene,
     private renderer: WebGLRenderer,
     private $canvas: any,
@@ -35,7 +34,7 @@ export default class Application {
 
     this.setConfig();
     this.setRenderer();
-    this.setFPSCounter();
+    //this.setFPSCounter();
     this.setCamera();
     this.setWorld();
     this.setSky();
