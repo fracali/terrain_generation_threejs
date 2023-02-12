@@ -5,7 +5,7 @@ export default class {
   static cameraFov = 50;
   static cameraFar = 5000;
   static cameraNear = 0.2;
-  static fogDensity = 0.22;
+  static fogDensity = 0;
 
   // Terrain height
   static terrainHeightIntensity = 0.005;

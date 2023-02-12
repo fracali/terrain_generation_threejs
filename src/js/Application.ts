@@ -37,7 +37,7 @@ export default class Application {
     //this.setFPSCounter();
     this.setCamera();
     this.setWorld();
-    this.setSky();
+    //this.setSky();
     //this.setHelpers();
   }
 
@@ -102,9 +102,9 @@ export default class Application {
 
   setHelpers() {
     let axesHelper = new AxesHelper(5);
-    this.scene?.add(axesHelper);
+    //this.scene?.add(axesHelper);
 
-    let gridHelper = new GridHelper(10, 10);
+    let gridHelper = new GridHelper(1000, 1000);
     this.scene?.add(gridHelper);
   }
 

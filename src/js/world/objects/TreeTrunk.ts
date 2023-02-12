@@ -1,4 +1,4 @@
-import { Mesh } from "three";
+import { Mesh, MeshStandardMaterial } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 // @ts-ignore
 import treeTrunkModel from "../../../assets/resources/tree_trunk.glb?url";
@@ -16,6 +16,10 @@ export default class TreeTrunk {
       const loader = new GLTFLoader();
       loader.load(treeTrunkModel, (gltf) => {
         const trunkMesh = gltf.scene.children[0].children[0] as Mesh;
+        trunkMesh.material = new MeshStandardMaterial({
+          color: 0xff000000,
+          wireframe: true,
+        });
         resolve(trunkMesh);
       });
     });

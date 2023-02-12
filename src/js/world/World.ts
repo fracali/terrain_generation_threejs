@@ -23,7 +23,7 @@ export default class World {
     this.worldCenterX = Constants.terrainWidth / 2;
     this.worldCenterZ = Constants.terrainDepth / 2;
 
-    this.setAxes();
+    //this.setAxes();
     this.setLights();
     this.setFloor();
     this.addTreeTrunks();

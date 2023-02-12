@@ -110,8 +110,6 @@ export default class {
     this.instancedMesh.instanceMatrix.needsUpdate = true;
   }
 
-  lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a;
-
   private getUpdatedPosition(instanceIndex: number): Vector3 {
     if (!this.instancedMesh) {
       return new Vector3();

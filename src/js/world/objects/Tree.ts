@@ -17,9 +17,8 @@ export default class Tree {
       const loader = new TextureLoader();
       loader.load(treeTexture, async (texture) => {
         this.material = new MeshStandardMaterial({
-          map: texture,
-          transparent: true,
-          alphaTest: 0.5,
+          wireframe: true,
+          transparent: false,
         });
 
         // Carica il modello solo dopo aver caricato il materiale

@@ -29,7 +29,7 @@ export default class Camera {
     this.setOrbitControls();
 
     this.time.on("tick", () => {
-      this.updateHeight();
+      //this.updateHeight();
     });
   }
 
@@ -118,13 +118,6 @@ export default class Camera {
       this.instance,
       this.renderer.domElement
     );
-    this.orbitControls.enableDamping = true;
-    this.orbitControls.dampingFactor = 0.1;
-    this.orbitControls.enablePan = false;
-    this.orbitControls.enableZoom = false;
-    this.orbitControls.enableRotate = false;
-
-    //  this.orbitControls.maxPolarAngle = Math.PI / 2;
 
     this.orbitControls.target.set(this.worldCenterX, 1, this.worldCenterZ);
     this.orbitControls.update();
