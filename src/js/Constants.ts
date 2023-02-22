@@ -17,5 +17,5 @@ export default class {
   static terrainDepthRes = 150;
 
   // Terrain noise
-  static noiseSpeed = 0.4;
+  static noiseSpeed = 0.5;
 }
