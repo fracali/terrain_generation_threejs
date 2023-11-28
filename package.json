@@ -18,7 +18,7 @@
   "dependencies": {
     "simplex-noise": "^4.0.1",
     "stats.js": "^0.17.0",
-    "three": "^0.148.0",
+    "three": "^0.158.0",
     "alea": "^1.0.1"
   }
 }
