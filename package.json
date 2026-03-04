@@ -12,7 +12,7 @@
     "@types/stats.js": "^0.17.0",
     "@types/three": "^0.160.0",
     "dat.gui": "^0.7.9",
-    "vite": "^5.0.12",
+    "vite": "^6",
     "vite-plugin-glsl": "^1.1.1"
   },
   "dependencies": {
